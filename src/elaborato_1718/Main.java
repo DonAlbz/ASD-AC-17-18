@@ -16,8 +16,8 @@ public class Main {
      */
     
     public static void main(String[] args) {
-        Rete rete= new Rete();
-        //rete.start();
+        Import.primoScenario();
+        Rete.start();
         
     }
     

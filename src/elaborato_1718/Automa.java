@@ -14,19 +14,31 @@ import java.util.Vector;
 public class Automa {
 
     private Vector<Stato> stati;
-    private Stato statoCorrente = stati.firstElement();
+    private Stato statoCorrente;
     private String descrizione;
+    
+    public Automa(String s){
+        this.descrizione=s;
+        stati=new Vector<>();
+    }
 
     boolean isAbilitato() {
         return statoCorrente.isAbilitato();
     }
 
-    void scatta(Transazione t) {
+    void scatta(Transizione t) {
         this.statoCorrente = statoCorrente.scatta(t);
     }
 
     void scatta() {
         this.statoCorrente = statoCorrente.scatta();
     }
-
+    
+    void addStato(Stato s){
+        stati.add(s);
+    }
+    
+    void setStatoIniziale(){
+        statoCorrente=stati.firstElement();
+    }
 }
