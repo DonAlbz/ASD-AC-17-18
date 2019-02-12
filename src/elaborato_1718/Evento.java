@@ -9,16 +9,11 @@ package elaborato_1718;
  *
  * @author Alb
  */
-public class Main {
-
-    /**
-     * @param args the command line arguments
-     */
+public class Evento {
+    private String descrizione;
     
-    public static void main(String[] args) {
-        Rete rete= new Rete();
-        //rete.start();
-        
+    public Evento(String descrizione){
+        this.descrizione=descrizione;
     }
     
 }

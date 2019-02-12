@@ -9,16 +9,6 @@ package elaborato_1718;
  *
  * @author Alb
  */
-public class Main {
-
-    /**
-     * @param args the command line arguments
-     */
-    
-    public static void main(String[] args) {
-        Rete rete= new Rete();
-        //rete.start();
-        
-    }
+public class Cammino {
     
 }
