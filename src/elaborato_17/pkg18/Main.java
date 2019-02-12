@@ -9,7 +9,7 @@ package elaborato_17.pkg18;
  *
  * @author Alb
  */
-public class Elaborato_1718 {
+public class Main {
 
     /**
      * @param args the command line arguments
