@@ -10,5 +10,6 @@ package elaborato_1718;
  * @author Alb
  */
 public class Parametri {
+    public final static String EVENTO_NULLO = "\u0190";
     
 }
