@@ -28,11 +28,11 @@ public class Import {
         Vector<Evento> eventiOut = new Vector<>();
 
         Evento[] eventoOut = {null, e3};
-        Transizione t2a = new Transizione("t2a", s21, Rete.getLink(0), e2, eventoOut);
+        Transizione t2a = new Transizione("t2a", s21, 0, e2, eventoOut);
         s20.addTransazione(t2a);
 
         Evento[] eventot2b = {null, e3};
-        Transizione t2b = new Transizione("t2b", s20, null, null, eventot2b);
+        Transizione t2b = new Transizione("t2b", s20, -1, null, eventot2b);
         s21.addTransazione(t2b);
 
         c2.addStato(s20);
@@ -46,11 +46,11 @@ public class Import {
         Stato s31 = new Stato("31");
 
         Evento[] eventit3a = {e2, null};
-        Transizione t3a = new Transizione("t3a", s31, null, null, eventit3a);
+        Transizione t3a = new Transizione("t3a", s31, -1, null, eventit3a);
         s30.addTransazione(t3a);
 
-        Transizione t3c = new Transizione("t3c", s31, Rete.getLink(1), e3, null);
-        Transizione t3b = new Transizione("t3b", s31, Rete.getLink(1), e3, null);
+        Transizione t3c = new Transizione("t3c", s31, 1, e3, null);
+        Transizione t3b = new Transizione("t3b", s31, 1, e3, null);
         s31.addTransazione(t3b);
         s31.addTransazione(t3c);
         

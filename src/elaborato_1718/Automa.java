@@ -30,8 +30,9 @@ public class Automa {
         this.statoCorrente = statoCorrente.scatta(t);
     }
 
-    void scatta() {
+    Transizione scatta() {
         this.statoCorrente = statoCorrente.scatta();
+        return statoCorrente.getTransizioneAbilitata();
     }
     
     void addStato(Stato s){
@@ -40,5 +41,13 @@ public class Automa {
     
     void setStatoIniziale(){
         statoCorrente=stati.firstElement();
+    }
+    
+    Stato getStatoCorrente(){
+        return statoCorrente;
+    }
+
+    Transizione getTransizioneEseguita() {
+        return statoCorrente.getTransizioneAbilitata();
     }
 }

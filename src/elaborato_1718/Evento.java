@@ -16,4 +16,17 @@ public class Evento {
         this.descrizione=descrizione;
     }
     
+    public String toString(){
+        return descrizione;
+    }
+    
+    public boolean equals(Evento e2){
+        return descrizione.equals(e2.getDescrizione());
+    }
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+    
+    
 }

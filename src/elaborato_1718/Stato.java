@@ -32,7 +32,7 @@ public class Stato {
         return false;
     }
 
-    private Transizione getTransazioneAbilitata() {
+    Transizione getTransizioneAbilitata() {
         return transazioneAbilitata;
     }
 
@@ -47,4 +47,19 @@ public class Stato {
     public void addTransazione(Transizione t){
         transizioni.add(t);
     }
+    
+    public boolean equals(Stato s2){
+        return descrizione.equals(s2.getDescrizione());
+    }
+    
+    public String toString(){
+        return descrizione;
+    }
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+    
+    
+    
 }
