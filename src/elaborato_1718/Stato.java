@@ -14,18 +14,18 @@ import java.util.Vector;
 public class Stato {
 
     private Vector<Transizione> transizioni;
-    private Transizione transazioneAbilitata;
+    private Transizione transizioneAbilitata;
     private String descrizione;
 
-    public Stato(String s){
-        this.descrizione=s;
+    public Stato(String s) {
+        this.descrizione = s;
         transizioni = new Vector<>();
     }
-    
+
     boolean isAbilitato() {
         for (int i = 0; i < transizioni.size(); i++) {
             if (transizioni.get(i).isAbilitato()) {
-                transazioneAbilitata = transizioni.get(i);
+                transizioneAbilitata = transizioni.get(i);
                 return true;
             }
         }
@@ -33,7 +33,7 @@ public class Stato {
     }
 
     Transizione getTransizioneAbilitata() {
-        return transazioneAbilitata;
+        return transizioneAbilitata;
     }
 
     public Stato scatta(Transizione t) {
@@ -41,25 +41,23 @@ public class Stato {
     }
 
     public Stato scatta() {
-        return transazioneAbilitata.scatta();
+        return transizioneAbilitata.scatta();
     }
-    
-    public void addTransazione(Transizione t){
+
+    public void addTransazione(Transizione t) {
         transizioni.add(t);
     }
-    
-    public boolean equals(Stato s2){
+
+    public boolean equals(Stato s2) {
         return descrizione.equals(s2.getDescrizione());
     }
-    
-    public String toString(){
+
+    public String toString() {
         return descrizione;
     }
 
     public String getDescrizione() {
         return descrizione;
     }
-    
-    
-    
+
 }

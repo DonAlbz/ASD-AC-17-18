@@ -16,6 +16,7 @@ public class Automa {
     private Vector<Stato> stati;
     private Stato statoCorrente;
     private String descrizione;
+    private Transizione transizioneAbilitata;
     
     public Automa(String s){
         this.descrizione=s;
@@ -23,16 +24,20 @@ public class Automa {
     }
 
     boolean isAbilitato() {
-        return statoCorrente.isAbilitato();
+        boolean resp= statoCorrente.isAbilitato();
+        if (resp)
+            transizioneAbilitata=statoCorrente.getTransizioneAbilitata();
+        return resp;
     }
 
-    void scatta(Transizione t) {
+    Transizione scatta(Transizione t) {
         this.statoCorrente = statoCorrente.scatta(t);
+        return transizioneAbilitata;
     }
 
     Transizione scatta() {
         this.statoCorrente = statoCorrente.scatta();
-        return statoCorrente.getTransizioneAbilitata();
+        return transizioneAbilitata;
     }
     
     void addStato(Stato s){
@@ -41,14 +46,15 @@ public class Automa {
     
     void setStatoIniziale(){
         statoCorrente=stati.firstElement();
-        statoCorrente.isAbilitato();
+        if(statoCorrente.isAbilitato())
+            transizioneAbilitata=statoCorrente.getTransizioneAbilitata();
     }
     
     Stato getStatoCorrente(){
         return statoCorrente;
     }
 
-    Transizione getTransizioneEseguita() {
-        return statoCorrente.getTransizioneAbilitata();
+    Transizione getTransizioneAbilitata() {
+        return transizioneAbilitata;
     }
 }
