@@ -12,4 +12,6 @@ package elaborato_1718;
 public class Parametri {
     public final static String EVENTO_NULLO = "\u0190";
     
+    //public static int 
+    
 }
