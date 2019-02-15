@@ -18,6 +18,15 @@ public class Automa {
     private String descrizione;
     private Transizione transizioneAbilitata;
     
+
+    
+    
+    
+    public String getDescrizione(){
+        return descrizione;
+    }
+    
+
     public Automa(String s){
         this.descrizione=s;
         stati=new Vector<>();
@@ -57,4 +66,5 @@ public class Automa {
     Transizione getTransizioneAbilitata() {
         return transizioneAbilitata;
     }
+
 }
