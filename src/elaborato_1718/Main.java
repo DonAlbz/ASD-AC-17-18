@@ -5,17 +5,28 @@
  */
 package elaborato_1718;
 
-/**
- *
- * @author Alb
- */
-public class Main {
+import java.io.IOException;
+import java.util.Vector;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+public class Main {
+    
+    public static void main(String[] args) throws IOException {
+       String path = "/Users/Francesco/Documents/Documenti/Esami Magistrale/Algoritmi e Strutture Dati/Progetto/ASD-AC-17-18/src/FileInput/input.txt";
+       try{
+           Import file = new Import(path);
+           Vector<String> vettore = file.apriFile();
+           String[] automi = file.getAutomi(vettore);
+           String[] link = file.getLink(vettore);
+           String[] eventi = file.getEventi(vettore);
+           
+           /*for(String stringa : vettore){
+               System.out.println(stringa);
+           }*/
+           
+       }
+       catch(IOException e){
+           System.out.println(e.getMessage());
+       }
     }
     
 }

@@ -11,4 +11,6 @@ package elaborato_1718;
  */
 public class Parametri {
     
+    //public static int 
+    
 }

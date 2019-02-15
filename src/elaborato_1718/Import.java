@@ -23,45 +23,62 @@ public class Import {
         path=file_path;
     }
     
-    public Vector<String> apriFile() throws FileNotFoundException,IOException{
+    public Vector<String> apriFile() throws FileNotFoundException, IOException {
         FileReader file = new FileReader(path);
         BufferedReader textReader = new BufferedReader(file);
-        
-        Vector <String> fileToString = new Vector<>();
+
+        Vector<String> fileToString = new Vector<>();
         String[] input = null;
-        try{
+        try {
             int i = 0;
             String lineaDaCopiare;
-            while((lineaDaCopiare = textReader.readLine()) != null){
+            while ((lineaDaCopiare = textReader.readLine()) != null) {
                 fileToString.add(lineaDaCopiare);
             }
-            
-        } catch(IOException e){
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        
-        
-        
-//        int numberOfLines = leggiNumeroRigheFile(textReader);
-//        System.out.println(numberOfLines);
-//        //int numberOfLines = 26;
-//        String[] textData = new String[numberOfLines];
-//        
-////        for(int i=0; i<numberOfLines; i++){
-////            textData[i] = textReader.readLine();
-////        }
-////        
+
         textReader.close();
         return fileToString;
     }
     
-//    public int leggiNumeroRigheFile(FileReader file) throws IOException{
-//        
-//        BufferedReader textReader = new BufferedReader(file);
-//        
-//        
-//        textReader.close();
-//        System.out.println(numberOfLines);
-//        return numberOfLines;
+    public String[] getAutomi(Vector<String> fileInput){
+        // sappiamo che gli automi sono posizionati in riga 0 del file
+        String daSplittare = fileInput.get(0);
+        String[] automi = daSplittare.split("\t");
+        for(String stringa : automi){
+            System.out.println(stringa);
+        }
+        return automi;
+    }
+    
+    public String[] getLink(Vector<String> fileInput){
+        // sappiamo che i link sono posizionati in riga 2 del file
+        String daSplittare = fileInput.get(2);
+        String[] link = daSplittare.split("\t");
+        for(String stringa : link){
+            System.out.println(stringa);
+        }
+        return link;
+    }
+    
+    public String[] getEventi(Vector<String> fileInput){
+        // sappiamo che gli eventi sono posizionati in riga 4 del file
+        String daSplittare = fileInput.get(4);
+        String[] eventi = daSplittare.split("\t");
+        for(String stringa : eventi){
+            System.out.println(stringa);
+        }
+        return eventi;
+    }
+    
+//    public String[] getStatiDaAutoma(Vector<String> fileInput, Automa automa){
+//        for(int i=0; i<fileInput.size(); i++){
+//            if(fileInput.get(i).equalsIgnoreCase(automa.getDescrizione()) && i!=1){
+//            }
+//        }
 //    }
 }
+
