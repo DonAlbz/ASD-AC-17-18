@@ -41,6 +41,7 @@ public class Automa {
     
     void setStatoIniziale(){
         statoCorrente=stati.firstElement();
+        statoCorrente.isAbilitato();
     }
     
     Stato getStatoCorrente(){
