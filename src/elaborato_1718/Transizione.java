@@ -43,7 +43,7 @@ public class Transizione {
     }
 
     boolean isAbilitato() {
-        if (linkIn > 0) {
+        if (linkIn >= 0) {
             if (Rete.getLink(linkIn) != eventoRichiesto) {
                 return false;
             }
