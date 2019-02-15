@@ -50,7 +50,7 @@ public class Import {
         s30.addTransazione(t3a);
 
         Transizione t3c = new Transizione("t3c", s31, 1, e3, null);
-        Transizione t3b = new Transizione("t3b", s31, 1, e3, null);
+        Transizione t3b = new Transizione("t3b", s30, 1, e3, null);
         s31.addTransazione(t3b);
         s31.addTransazione(t3c);
         

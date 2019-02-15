@@ -26,11 +26,12 @@ public class Transizione {
      * @param linkIn quale link viene "ascoltato", se non viene ascoltato alcun
      * link, linkIn=-1
      * @param eventoRichiesto evento richiesto sul link numero linkIn
-     * @param linkOut array che ha la stessa dimensione dell'array Rete.link, 
-     * ogni elemento e' un evento o e' null. Se un elemento di linkOut non e' null,
-     * allora rappresenta l'evento scatenato dalla transizione e da posizionare sul
-     * link che ha per posizione, la posizione dell'elemento in linkOut.
-     * 
+     * @param linkOut array che ha la stessa dimensione dell'array Rete.link,
+     * ogni elemento e' un evento o e' null. Se un elemento di linkOut non e'
+     * null, allora rappresenta l'evento scatenato dalla transizione e da
+     * posizionare sul link che ha per posizione, la posizione dell'elemento in
+     * linkOut.
+     *
      *
      */
     public Transizione(String s, Stato destinazione, int linkIn,
@@ -43,20 +44,22 @@ public class Transizione {
     }
 
     boolean isAbilitato() {
-        if (linkIn > 0) {
+        if (linkIn >= 0) {
             if (Rete.getLink(linkIn) != eventoRichiesto) {
                 return false;
             }
+            /*
             else{
                 Rete.setLink(linkIn, null);
             }
+             */
         }
         if (linkOut != null) {
             for (int i = 0; i < linkOut.length; i++) {
                 if (linkOut[i] != null) {
                     if (Rete.getLink(i) != null) {
                         return false;
-                    };
+                    }
                 }
             }
         }
@@ -71,10 +74,13 @@ public class Transizione {
                 }
             }
         }
+        if (linkIn >= 0) {
+            Rete.setLink(linkIn, null);
+        }
         return statoDestinazione;
     }
-    
-    public String toString(){
+
+    public String toString() {
         return descrizione;
     }
 }

@@ -5,6 +5,7 @@
  */
 package elaborato_1718;
 
+import java.util.Arrays;
 import java.util.Vector;
 
 /**
@@ -19,6 +20,7 @@ public class Rete {
     private static String descrizione;
     private static Evento[] link;
     private static Transizione transizioneEseguita;
+    private static Transizione transizioneAbilitata;
 
     public static void creaRete(String s, Evento[] _link, Evento[] _eventi) {
         descrizione = s;
@@ -29,29 +31,52 @@ public class Rete {
     }
 
     public static void start() {
+        System.out.println("numero cammino: "+ 0);
         inizializza();
+        int numeroCammino = 0;
+        boolean nuovoCammino;
+        boolean almenoUnAutomaAbilitato = false;
+        boolean automaAttualeAbilitato = false;
+       
 
         while (true) { //TODO: sostituire il true con una verifica che restituisce true se la rete può scattare
-            int numeroCammino = 0;
-            for (int i = 0; i < automi.size(); i++) {
-                if (automi.get(i).isAbilitato()) {
-                    transizioneEseguita = automi.get(i).getTransizioneEseguita();
+            nuovoCammino = false;
+            almenoUnAutomaAbilitato = false;
+            for (int i = 0; i < automi.size() && !nuovoCammino; i++) {
+                automaAttualeAbilitato = automi.get(i).isAbilitato();
+                almenoUnAutomaAbilitato = almenoUnAutomaAbilitato || automaAttualeAbilitato;
+                if (automaAttualeAbilitato) {
+                    transizioneAbilitata = automi.get(i).getTransizioneAbilitata();
                     //transizioneEseguita = automi.get(i).scatta();
-                    automi.get(i).scatta();
+                    transizioneEseguita = automi.get(i).scatta();
                     StatoRete statoRete = creaStatoCorrente();
 
                     if (isNuovoStato(numeroCammino, statoRete)) {
                         //TODO: non si viene mai generato un nuovo cammino: indagare.
                         addStatoAlCammino(numeroCammino, statoRete);
-                        System.out.println(statoRete.toString());
                         System.out.println(transizioneEseguita.toString());
+                        System.out.println(statoRete.getDescrizione());
                     } else {
+                        addStatoAlCammino(numeroCammino, statoRete);
+                        System.out.println(transizioneEseguita.toString());
+                        System.out.println(statoRete.getDescrizione());
+
                         numeroCammino++;
+                        nuovoCammino = true;
                         System.out.println("numero cammino: " + numeroCammino);
                         System.out.println();
+                        aggiungiCammino(numeroCammino);
                     }
 
                 }
+            }
+            if (!almenoUnAutomaAbilitato) {
+                numeroCammino++;
+                nuovoCammino = true;
+                System.out.println();
+                System.out.println("numero cammino: " + numeroCammino);
+                System.out.println();
+                aggiungiCammino(numeroCammino);
             }
         }
     }
@@ -65,7 +90,7 @@ public class Rete {
         for (int i = 0; i < statoAutomi.length; i++) {
             statoAutomi[i] = automi.get(i).getStatoCorrente();
         }
-        return new StatoRete(link, statoAutomi);
+        return new StatoRete(link.clone(), statoAutomi);
     }
 
     /**
@@ -83,13 +108,25 @@ public class Rete {
 
     private static void inizializza() {
         cammini.add(new Cammino());
-        impostaStatiIniziali();
+        impostaStatiIniziali(0);
     }
 
-    private static void impostaStatiIniziali() {
+    private static void impostaStatiIniziali(int numeroCammino) {
+        Arrays.fill(link, null); // svuota l'array link
+
         for (Automa automa : automi) {
             automa.setStatoIniziale();
         }
+
+        StatoRete statoRete = creaStatoCorrente();
+        addStatoAlCammino(numeroCammino, statoRete);
+
+        System.out.println(statoRete.getDescrizione());
+    }
+
+    private static void aggiungiCammino(int numeroCammino) {
+        cammini.add(new Cammino());
+        impostaStatiIniziali(numeroCammino);
     }
 
     public void setEventi(Evento[] eventi) {
