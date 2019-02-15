@@ -11,4 +11,14 @@ package elaborato_1718;
  */
 public class Automa {
     
+    private String descrizione;
+    
+    public Automa(String s){
+        this.descrizione=s;
+    }
+    
+    public String getDescrizione(){
+        return descrizione;
+    }
+    
 }
