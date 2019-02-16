@@ -31,52 +31,55 @@ public class Rete {
     }
 
     public static void start() {
-        System.out.println("numero cammino: "+ 0);
-        inizializza();
+        System.out.println("numero cammino: " + 0);
+        Cammino camminoAttuale = creaNuovoCammino();//il cammino attuale diventa un nuovo cammino con gli stati degli automi e i link azzerati
         int numeroCammino = 0;
-        boolean nuovoCammino;
-        boolean almenoUnAutomaAbilitato = false;
-        boolean automaAttualeAbilitato = false;
-       
+        // boolean camminoAttuale;
+        boolean almenoUnAutomaAbilitato;
+        boolean scattato;
+        boolean automaAttualeAbilitato;
+        boolean statoFinale=false;
 
-        while (true) { //TODO: sostituire il true con una verifica che restituisce true se la rete può scattare
-            nuovoCammino = false;
+        while (true) { //TODO: sostituire il true con una verifica che restituisce false se sono esauriti i cammini percorribili dalla rete
+            // camminoAttuale = false;
             almenoUnAutomaAbilitato = false;
-            for (int i = 0; i < automi.size() && !nuovoCammino; i++) {
-                automaAttualeAbilitato = automi.get(i).isAbilitato();
-                almenoUnAutomaAbilitato = almenoUnAutomaAbilitato || automaAttualeAbilitato;
-                if (automaAttualeAbilitato) {
-                    transizioneAbilitata = automi.get(i).getTransizioneAbilitata();
-                    //transizioneEseguita = automi.get(i).scatta();
-                    transizioneEseguita = automi.get(i).scatta();
-                    StatoRete statoRete = creaStatoCorrente();
+            scattato = false;
+            automaAttualeAbilitato = false;            
+            StatoRete statoAttuale = creaStatoCorrente();//Stato corrente della rete
 
-                    if (isNuovoStato(numeroCammino, statoRete)) {
-                        //TODO: non si viene mai generato un nuovo cammino: indagare.
-                        addStatoAlCammino(numeroCammino, statoRete);
-                        System.out.println(transizioneEseguita.toString());
-                        System.out.println(statoRete.getDescrizione());
-                    } else {
-                        addStatoAlCammino(numeroCammino, statoRete);
-                        System.out.println(transizioneEseguita.toString());
-                        System.out.println(statoRete.getDescrizione());
+            if (!isNuovoStato(camminoAttuale, statoAttuale)|| statoFinale) { //Se all'interno del cammino attuale esiste uno stato uguale a quello corrente
+                camminoAttuale.add(statoAttuale);//Lo stato corrente viene aggiunto al cammino (per segnalare il LOOP)
+                System.out.println(statoAttuale.getDescrizione());//si stampa lo stato attuale
+                
+                cammini.add(camminoAttuale);//Il cammino attuale viene aggiunto ai cammini dello spazio comportamentale
 
-                        numeroCammino++;
-                        nuovoCammino = true;
-                        System.out.println("numero cammino: " + numeroCammino);
-                        System.out.println();
-                        aggiungiCammino(numeroCammino);
-                    }
-
-                }
-            }
-            if (!almenoUnAutomaAbilitato) {
-                numeroCammino++;
-                nuovoCammino = true;
+                numeroCammino++;//il numero di cammini viene incrementato
+                camminoAttuale = creaNuovoCammino();//il cammino attuale diventa un nuovo cammino con tutti gli stati e i link azzerati
+                statoFinale=false;//si resetta la variabile che controlla se lo stato attuale è uno stato finale
+                //nuovoCammino = true;
+                System.out.println();
                 System.out.println();
                 System.out.println("numero cammino: " + numeroCammino);
                 System.out.println();
-                aggiungiCammino(numeroCammino);
+            } else {
+                for (int i = 0; i < automi.size() /*&& !camminoAttuale*/ && !scattato; i++) {//se nessun automa è già scattato, si itera su tutti gli automi
+                    automaAttualeAbilitato = automi.get(i).isAbilitato();//true se l'automa attuale ha uno stato con una transizione abilitata
+                    almenoUnAutomaAbilitato = almenoUnAutomaAbilitato || automaAttualeAbilitato;//true se almeno uno tra gli automi è abilitato
+                    if (automaAttualeAbilitato) {//se l'automa attuale è abilitato
+                        transizioneAbilitata = automi.get(i).getTransizioneAbilitata();//transizione abilitata diventa la transizione abilitata allo scatto nell'automa attuale                   
+                        transizioneEseguita = automi.get(i).scatta();//l'automa attuale viene fatto scattare e transizione eseguita diventa la transizione che è stata eseguita
+                        scattato = true;//true se un automa è scattato
+                        statoAttuale.setTransizioneEseguita(transizioneEseguita);//la transizione eseguita viene aggiunta allo StatoRete attuale
+                        camminoAttuale.add(statoAttuale);//Lo StatoRete attuale viene aggiunto al cammino attuale
+                        System.out.println(statoAttuale.getDescrizione());
+                        System.out.println(transizioneEseguita.toString());
+                        //StatoRete statoReteDopoLoScatto = creaStatoCorrente();
+
+                    }
+                }
+                if (!almenoUnAutomaAbilitato) {//se nessuno degli automi è abilitato allo scatto
+                    statoFinale=true;//lo StatoRete attuale è uno stato finale
+                }
             }
         }
     }
@@ -93,40 +96,35 @@ public class Rete {
         return new StatoRete(link.clone(), statoAutomi);
     }
 
-    /**
-     * Aggiunge lo stato corrente della rete, al cammino corrente
-     *
-     * @param numeroCammino
-     */
-    private static void addStatoAlCammino(int numeroCammino, StatoRete statoRete) {
+    
+    /*private static void addStatoAlCammino(int numeroCammino, StatoRete statoRete) {
         cammini.get(numeroCammino).add(statoRete);
-    }
+    }*/
 
-    private static boolean isNuovoStato(int numeroCammino, StatoRete statoRete) {
-        return !cammini.get(numeroCammino).contains(statoRete);
+    private static boolean isNuovoStato(Cammino camminoAttuale, StatoRete statoRete) {
+        return !camminoAttuale.contains(statoRete);
     }
 
     private static void inizializza() {
         cammini.add(new Cammino());
-        impostaStatiIniziali(0);
+        impostaStatiIniziali();
     }
 
-    private static void impostaStatiIniziali(int numeroCammino) {
+    private static void impostaStatiIniziali() {
         Arrays.fill(link, null); // svuota l'array link
 
         for (Automa automa : automi) {
             automa.setStatoIniziale();
         }
 
-        StatoRete statoRete = creaStatoCorrente();
-        addStatoAlCammino(numeroCammino, statoRete);
-
-        System.out.println(statoRete.getDescrizione());
+        //addStatoAlCammino(numeroCammino, statoRete);
+        //       System.out.println(statoRete.getDescrizione());
     }
 
-    private static void aggiungiCammino(int numeroCammino) {
-        cammini.add(new Cammino());
-        impostaStatiIniziali(numeroCammino);
+    private static Cammino creaNuovoCammino() {
+        Cammino nuovoCammino = new Cammino();
+        impostaStatiIniziali();
+        return nuovoCammino;
     }
 
     public void setEventi(Evento[] eventi) {
