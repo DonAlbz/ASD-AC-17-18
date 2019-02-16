@@ -11,7 +11,7 @@ import java.util.Vector;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        String path = "/Users/Francesco/Documents/Documenti/Esami Magistrale/Algoritmi e Strutture Dati/Progetto/ASD-AC-17-18/src/FileInput/input.txt";
+       /* String path = "/Users/Francesco/Documents/Documenti/Esami Magistrale/Algoritmi e Strutture Dati/Progetto/ASD-AC-17-18/src/FileInput/input.txt";
         try {
             Import file = new Import(path);
             Vector<String> vettore = file.apriFile();
@@ -23,9 +23,9 @@ public class Main {
             System.out.println(e.getMessage());
         }
         
-        
-        //Import.primoScenario();
-        //Rete.start();
+        */
+        Import.primoScenario();
+        Rete.start();
 
     }
 }
