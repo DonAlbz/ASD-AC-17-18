@@ -9,14 +9,29 @@ import java.io.IOException;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class Import {
     
-    private String path;
+    private String path = "/Users/Francesco/Documents/Documenti/Esami Magistrale/Algoritmi e Strutture Dati/Progetto/ASD-AC-17-18/src/FileInput/input.txt";
+    Vector<String> file;
     
-    public Import(String file_path){
-        path=file_path;
+    public Import() throws IOException{
+        file = apriFile();
+    }
+    
+    
+    public void primoScenario_nuovo() {
+        String[] automi = getAutomi(file);
+        String[] link = getLink(file);
+        String[] eventi = getEventi(file);
+        Automa automa = new Automa(automi[0]);
+        ArrayList<String> prova = getStatiDaAutoma(automa, file);
+        ArrayList<String> prova2 = getNomiTransizioni(automa, file);
+        ArrayList<String> prova3 = getStatiDestinazioneDiTransizione(automa, file);
+        String eventoRichiesto = getEventoRichiesto(automa, prova2.get(0), file);
+        String[] eventiInUscita = getEventiInUscita(automa, prova2.get(0), file);
     }
 
     static void primoScenario() {
@@ -115,6 +130,135 @@ public class Import {
             System.out.println(stringa);
         }
         return eventi;
+    }
+    
+    public ArrayList<String> getStatiDaAutoma(Automa automa, Vector<String> fileInput){
+        ArrayList<String> statiDiAutoma = new ArrayList<>();
+        for(int i=0; i<fileInput.size(); i++){
+            // non devo accettare la riga 2 perché nel file input è l'elenco degli automi
+            if(fileInput.get(i).equals(automa.getDescrizione()) && i!=2){
+                int j = i+1;
+                String daSplittare = fileInput.get(j);
+                String[] stati = daSplittare.split("\t");
+                for (String stringa : stati) {
+                    statiDiAutoma.add(stringa);
+                    System.out.println(stringa);
+                }
+            }
+        }
+        return statiDiAutoma;
+    }
+    
+    public ArrayList<String> getNomiTransizioni(Automa automa, Vector<String> fileInput){
+        ArrayList<String> nomiTransizioni = new ArrayList<>();
+        for(int i=0; i<fileInput.size(); i++){
+            // la posizione delle transazioni è sempre sotto di 3 righe
+            if(fileInput.get(i).equals(automa.getDescrizione()) && i!=2){
+                int j = i+3;
+                while(fileInput.get(j).length()!=0){
+                    String daSplittare = fileInput.get(j);
+                    String[] splittato = daSplittare.split("\t");
+                    String transizione = splittato[1];
+                    nomiTransizioni.add(transizione);
+                    System.out.println(transizione);
+                    j++;
+                }
+            }
+        }
+        return nomiTransizioni;
+    }
+    
+    public ArrayList<String> getStatiDestinazioneDiTransizione(Automa automa, Vector<String> fileInput){
+        ArrayList<String> statiDestinazione = new ArrayList<>();
+        for(int i=0; i<fileInput.size(); i++){
+            // la posizione delle transazioni è sempre a partire dalla riga 3
+            if(fileInput.get(i).equals(automa.getDescrizione()) && i!=2){
+                int j = i+3;
+                while(fileInput.get(j).length()!=0){
+                    String daSplittare = fileInput.get(j);
+                    String[] splittato = daSplittare.split("\t");
+                    String statoDestionazione = splittato[2];
+                    statiDestinazione.add(statoDestionazione);
+                    System.out.println(statoDestionazione);
+                    j++;
+                }
+            }
+        }
+        return statiDestinazione;
+    }
+    
+    public String getEventoRichiesto(Automa automa, String nomeTransizione, Vector<String> fileInput){
+        String eventoRichiesto=null;
+        for(int i=0; i<fileInput.size(); i++){
+            if(fileInput.get(i).equals(automa.getDescrizione()) && i!=2){
+                while(!fileInput.get(i).equals(Parametri.SEPARATORE)){
+                    if (fileInput.get(i).length() != 0 && fileInput.get(i).contains("t")) {
+                        String transizioneDaConfrontare = fileInput.get(i);
+                        transizioneDaConfrontare = transizioneDaConfrontare.substring(0, 3);
+                        if(transizioneDaConfrontare.equalsIgnoreCase(nomeTransizione)){
+                            // controllo se la stringa ha un evento in ingresso o no
+                            eventoRichiesto = fileInput.get(i).substring(5, 6);
+                            if(eventoRichiesto.equalsIgnoreCase("/")){
+                                eventoRichiesto = null;
+                                System.out.println(eventoRichiesto);
+                                return eventoRichiesto;
+                            }
+                            else{
+                                eventoRichiesto = fileInput.get(i).substring(5, 7);
+                                System.out.println(eventoRichiesto);
+                                return eventoRichiesto;
+                            }
+                        }
+                    }
+                    i++;
+                }
+            }
+        }
+        return eventoRichiesto;
+    }
+    
+    public String[] getEventiInUscita(Automa automa, String nomeTransizione, Vector<String> fileInput){
+        String[] eventiInUscita = null;
+        for(int i=0; i<fileInput.size(); i++){
+            if(fileInput.get(i).equals(automa.getDescrizione()) && i!=2){
+                while(!fileInput.get(i).equals(Parametri.SEPARATORE)){
+                    if (fileInput.get(i).length() != 0 && fileInput.get(i).contains("t")) {
+                        String transizioneDaConfrontare = fileInput.get(i);
+                        String sottoStringa = transizioneDaConfrontare.substring(0, 3);
+                        if(sottoStringa.equalsIgnoreCase(nomeTransizione)){
+                            // controllare se la stringa ha un uscita o meno
+                            int j = transizioneDaConfrontare.indexOf("/");
+                            // il metodo ritorna -1 se non trova "/"
+                            if (j == -1) {
+                                // la transizione non ha eventi in uscita
+                                return eventiInUscita;
+                            } else {
+                                // salto il primo carattere perche' e' "{"
+                                String eventiDaSplittare = transizioneDaConfrontare.substring(j+2, transizioneDaConfrontare.length()-1);
+                                System.out.println(eventiDaSplittare);
+                                
+                                // ANCORA DA DEFINIRE COME AVVIENE LO SPLIT CON PIU' EVENTI IN USCITA,
+                                // AL MOMENTO SPLITTO CON LA VIRGOLA, 
+                                
+                                eventiInUscita = eventiDaSplittare.split(",");
+                                for(int x=0; x<eventiInUscita.length; x++){
+                                    eventiInUscita[x] = rimuoviParentesi(eventiInUscita[x]);
+                                    System.out.println(eventiInUscita[x]);
+                                }
+                                return eventiInUscita;
+                            }
+                        }
+                    }
+                    i++;
+                }
+            }
+        }
+        return eventiInUscita;
+    }
+    
+    public String rimuoviParentesi(String stringa){
+        String valida = stringa.substring(0, 2);
+        return valida;
     }
 
 }
