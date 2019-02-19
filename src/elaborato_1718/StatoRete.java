@@ -101,4 +101,10 @@ public class StatoRete {
         this.transizioneEseguita = transizioneEseguita;
     }
 
+    public Transizione getTransizioneEseguita() {
+        return transizioneEseguita;
+    }
+    
+    
+
 }

@@ -43,9 +43,9 @@ public class Transizione {
         this.linkOut = linkOut;
     }
 
-    boolean isAbilitato() {
-        if (linkIn >= 0) {
-            if (Rete.getLink(linkIn) != eventoRichiesto) {
+    boolean isAbilitato(Evento[] _link) {
+        if (linkIn >= 0) {            
+            if (_link[linkIn]!=eventoRichiesto) {
                 return false;
             }
             /*
@@ -57,7 +57,7 @@ public class Transizione {
         if (linkOut != null) {
             for (int i = 0; i < linkOut.length; i++) {
                 if (linkOut[i] != null) {
-                    if (Rete.getLink(i) != null) {
+                    if (_link[i] != null) {
                         return false;
                     }
                 }
@@ -66,16 +66,16 @@ public class Transizione {
         return true;
     }
 
-    Stato scatta() {
+    Stato scatta(Evento[] _link) {
         if (linkOut != null) {
             for (int i = 0; i < linkOut.length; i++) {
                 if (linkOut[i] != null) {
-                    Rete.setLink(i, linkOut[i]);
+                    _link[i] = linkOut[i];
                 }
             }
         }
         if (linkIn >= 0) {
-            Rete.setLink(linkIn, null);
+            _link[linkIn] = null;
         }
         return statoDestinazione;
     }
@@ -83,4 +83,5 @@ public class Transizione {
     public String toString() {
         return descrizione;
     }
+    
 }

@@ -5,6 +5,7 @@
  */
 package elaborato_1718;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -14,34 +15,46 @@ import java.util.Vector;
 public class Stato {
 
     private Vector<Transizione> transizioni;
-    private Transizione transizioneAbilitata;
+    private ArrayList<Transizione> transizioniAbilitate;
+    private Transizione transizioneEseguita;
     private String descrizione;
 
     public Stato(String s) {
         this.descrizione = s;
         transizioni = new Vector<>();
+        transizioniAbilitate=new ArrayList<>();
+    }
+    
+    public Stato(String s, Vector<Transizione> _transizioni) {
+        this.descrizione = s;
+        transizioni = _transizioni;
+        transizioniAbilitate=new ArrayList<>();
     }
 
-    boolean isAbilitato() {
+    boolean isAbilitato(Evento[] _link) {
+        transizioniAbilitate.clear();
+        boolean resp = false;
         for (int i = 0; i < transizioni.size(); i++) {
-            if (transizioni.get(i).isAbilitato()) {
-                transizioneAbilitata = transizioni.get(i);
-                return true;
+            if (transizioni.get(i).isAbilitato(_link)) {
+                transizioniAbilitate.add(transizioni.get(i));
+                resp= true;
             }
         }
-        return false;
+        return resp;
     }
 
-    Transizione getTransizioneAbilitata() {
-        return transizioneAbilitata;
+    ArrayList<Transizione> getTransizioniAbilitate() {
+        return transizioniAbilitate;
     }
 
-    public Stato scatta(Transizione t) {
-        return t.scatta();
+    public Stato scatta(Transizione t, Evento[] _link) {            
+        transizioneEseguita=t;
+        return t.scatta(_link);
     }
 
-    public Stato scatta() {
-        return transizioneAbilitata.scatta();
+    public Stato scatta(Evento[] _link) {
+        transizioneEseguita=transizioniAbilitate.get(0);
+        return transizioneEseguita.scatta(_link);
     }
 
     public void addTransazione(Transizione t) {
@@ -60,4 +73,9 @@ public class Stato {
         return descrizione;
     }
 
+    public Vector<Transizione> getTransizioni() {
+        return transizioni;
+    }
+
+   
 }
