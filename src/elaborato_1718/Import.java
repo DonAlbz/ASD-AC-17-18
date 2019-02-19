@@ -23,15 +23,72 @@ public class Import {
     
     
     public void primoScenario_nuovo() {
+//        String[] automi = getAutomi(file);
+//        String[] link = getLink(file);
+//        String[] eventi = getEventi(file);
+//        Automa automa = new Automa(automi[0]);
+//        ArrayList<String> prova = getStatiDaAutoma(automa, file);
+//        ArrayList<String> prova2 = getNomiTransizioni(automa, file);
+//        ArrayList<String> prova3 = getStatiDestinazioneDiTransizione(automa, file);
+//        System.out.println();
+//        System.out.println(getStatoDestinazioneDiTransizione(automa, prova2.get(0), file));
+//        String eventoRichiesto = getEventoRichiesto(automa, prova2.get(0), file);
+//        String[] eventiInUscita = getEventiInUscita(automa, prova2.get(0), file);
+        
+        Vector<Evento> eventiIn = new Vector<>();
+        Vector<Evento> eventiOut = new Vector<>();
         String[] automi = getAutomi(file);
-        String[] link = getLink(file);
-        String[] eventi = getEventi(file);
-        Automa automa = new Automa(automi[0]);
-        ArrayList<String> prova = getStatiDaAutoma(automa, file);
-        ArrayList<String> prova2 = getNomiTransizioni(automa, file);
-        ArrayList<String> prova3 = getStatiDestinazioneDiTransizione(automa, file);
-        String eventoRichiesto = getEventoRichiesto(automa, prova2.get(0), file);
-        String[] eventiInUscita = getEventiInUscita(automa, prova2.get(0), file);
+        String[] linkString = getLink(file);
+        String[] eventiString = getEventi(file);
+        
+        // Inizializzazione dei link
+        Evento[] link = new Evento[linkString.length];
+        
+        // Ciclo di inizializzazione degli eventi
+        Evento[] eventi = new Evento[eventiString.length];
+        for (int j = 0; j < eventi.length; j++) {
+            Evento evento = new Evento(eventiString[j]);
+            eventi[j] = evento;
+        }
+        
+        Rete.creaRete("primo scenario", link, eventi);
+
+        // Ciclo di inizializzazione degli automi
+        for (int i = 0; i < automi.length; i++) {
+            // aggiunta dell'automa
+            Automa automa = new Automa(automi[i]);
+            Rete.addAutoma(automa);
+
+            // aggiunta degli stati di automa
+            ArrayList<String> statiAutoma = getStatiDaAutoma(automa, file);
+            for (int j = 0; j < statiAutoma.size(); j++) {
+                Stato stato = new Stato(statiAutoma.get(j));
+                automa.addStato(stato);
+            }
+            
+            // aggiunta delle transizione di automa
+            ArrayList<String> nomiTransizioni = getNomiTransizioni(automa, file);
+            for(int x=0; x<nomiTransizioni.size(); x++){
+                Evento[] eventoScatenato = new Evento[link.length];
+                String[] eventoScatenatoString = getEventiInUscita(automa, nomiTransizioni.get(x), file);
+                for(int y=0; y<eventoScatenato.length; y++){
+                    eventoScatenato[y] = new Evento(eventoScatenatoString[y]);
+                }
+                String nomeTransizione = nomiTransizioni.get(x);
+                String nomeStatoDestinazione = getStatoDestinazioneDiTransizione(automa, nomiTransizioni.get(x), file);
+                //Stato statoDestinazione = automa.getStato(nomeStatoDestinazione);
+                
+                // DA FINIRE ANCORA LA CREAZIONE DELLA TRANSIZIONe
+                
+                //Transizione transizione = new Transizione(nomiTransizioni.get(x), getStatoDestinazioneDiTransizione(automa, nomiTransizioni.get(x), file));
+                
+            }
+            
+            //ArrayList<String> statiDestinazioneDiTransizioni = getStatiDestinazioneDiTransizione(automa, file);
+
+        }
+        
+        
     }
 
     static void primoScenario() {
@@ -86,7 +143,6 @@ public class Import {
         BufferedReader textReader = new BufferedReader(file);
 
         Vector<String> fileToString = new Vector<>();
-        String[] input = null;
         try {
             int i = 0;
             String lineaDaCopiare;
@@ -168,10 +224,11 @@ public class Import {
         return nomiTransizioni;
     }
     
+    // METODO AL MOMENTO NON UTILIZZATO
     public ArrayList<String> getStatiDestinazioneDiTransizione(Automa automa, Vector<String> fileInput){
         ArrayList<String> statiDestinazione = new ArrayList<>();
         for(int i=0; i<fileInput.size(); i++){
-            // la posizione delle transazioni è sempre a partire dalla riga 3
+            // la posizione delle transazioni è sempre a partire dalla riga 3 del blocco di riferimento dell'automa
             if(fileInput.get(i).equals(automa.getDescrizione()) && i!=2){
                 int j = i+3;
                 while(fileInput.get(j).length()!=0){
@@ -187,6 +244,33 @@ public class Import {
         return statiDestinazione;
     }
     
+    /**
+     *
+     * @param automa automa che contiene tutti gli stati
+     * @param nomeTransizione nome della transizione di riferimento per cercare il suo stato di destinazione
+     * @param fileInput vector contenente le stringhe del file input.txt
+     * @return viene ritornato il nome dello stato destinazione della transizione
+     */
+    public String getStatoDestinazioneDiTransizione(Automa automa, String nomeTransizione, Vector<String> fileInput){
+        String statoDestinazione = null;
+        for(int i = 0; i<fileInput.size(); i++){
+            // la posizione delle transazioni è sempre a partire dalla riga 3 del blocco di riferimento dell'automa
+            if(fileInput.get(i).equals(automa.getDescrizione()) && i!=2){
+                int j = i+3;
+                while(fileInput.get(j).length()!=0){
+                    String daSplittare = fileInput.get(j);
+                    String[] splittato = daSplittare.split("\t");
+                    String transizioneDaConfrontare = splittato[1];
+                    if(transizioneDaConfrontare.equalsIgnoreCase(nomeTransizione)){
+                        statoDestinazione = splittato[2];
+                    }
+                    j++;
+                }
+            }
+        }
+        return statoDestinazione;
+    }
+    
     public String getEventoRichiesto(Automa automa, String nomeTransizione, Vector<String> fileInput){
         String eventoRichiesto=null;
         for(int i=0; i<fileInput.size(); i++){
@@ -199,8 +283,8 @@ public class Import {
                             // controllo se la stringa ha un evento in ingresso o no
                             eventoRichiesto = fileInput.get(i).substring(5, 6);
                             if(eventoRichiesto.equalsIgnoreCase("/")){
+                                System.out.println("null");
                                 eventoRichiesto = null;
-                                System.out.println(eventoRichiesto);
                                 return eventoRichiesto;
                             }
                             else{
@@ -235,7 +319,6 @@ public class Import {
                             } else {
                                 // salto il primo carattere perche' e' "{"
                                 String eventiDaSplittare = transizioneDaConfrontare.substring(j+2, transizioneDaConfrontare.length()-1);
-                                System.out.println(eventiDaSplittare);
                                 
                                 // ANCORA DA DEFINIRE COME AVVIENE LO SPLIT CON PIU' EVENTI IN USCITA,
                                 // AL MOMENTO SPLITTO CON LA VIRGOLA, 

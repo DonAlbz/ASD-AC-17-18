@@ -18,18 +18,13 @@ public class Automa {
     private String descrizione;
     private Transizione transizioneAbilitata;
     
-
-    
-    
-    
-    public String getDescrizione(){
+    public String getDescrizione() {
         return descrizione;
     }
-    
 
-    public Automa(String s){
-        this.descrizione=s;
-        stati=new Vector<>();
+    public Automa(String s) {
+        this.descrizione = s;
+        stati = new Vector<>();
     }
 
     boolean isAbilitato() {
@@ -65,6 +60,21 @@ public class Automa {
 
     Transizione getTransizioneAbilitata() {
         return transizioneAbilitata;
+    }
+    
+    /**
+     *
+     * @param statoDaCercare e' la stringa che identifica lo stato da cercare nell'array 
+     * @return ritorna lo stato che si stava cercando, null se lo stato non esiste
+     */
+    public Stato getStato(String statoDaCercare){
+        Stato cercato = null;
+        for(int i = 0; i<stati.size(); i++){
+            if(statoDaCercare.equalsIgnoreCase(stati.get(i).getDescrizione())){
+                cercato = stati.get(i);
+            }
+        }
+        return cercato;
     }
 
 }
