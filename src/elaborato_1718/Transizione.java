@@ -34,8 +34,7 @@ public class Transizione {
      *
      *
      */
-    public Transizione(String descrizione, Stato destinazione, int linkIn,
-            Evento eventoRichiesto, Evento[] linkOut) {
+    public Transizione(String descrizione, Stato destinazione, int linkIn, Evento eventoRichiesto, Evento[] linkOut) {
         this.descrizione = descrizione;
         this.statoDestinazione = destinazione;
         this.linkIn = linkIn;
