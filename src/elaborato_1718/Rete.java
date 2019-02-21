@@ -77,8 +77,8 @@ public class Rete {
                             nuovoCamminoAttuale.copiaCammino(camminoAttuale);
                             Vector<Automa> automiAttuali=copiaAutomi(_automi);//NON COPIA CORRETTAMENTE: _automi e automiAttuali non coincidono
                             System.out.println("stato Attuale: " + statoAttuale.toString());
-                            System.out.println("_automa:" + _automi.toString());
-                            System.out.println("automiAttuali: "+ automiAttuali.toString());
+                            System.out.println("_automa:\t" + _automi.toString());
+                            System.out.println("automiAttuali:\t"+ automiAttuali.toString());
                             //vengono creati nuovi automi indipendenti da utilizzare su questo nuovo cammino
                             Evento[] linkAttuali= _link.clone();//vengono creati nuovi link indipendenti da utilizzare su questo nuovo cammino
                             StatoRete nuovoStatoAttuale;

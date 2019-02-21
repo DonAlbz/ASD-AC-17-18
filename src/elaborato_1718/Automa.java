@@ -83,19 +83,19 @@ public class Automa {
         for (Stato s : stati) {
             Stato statoDaAggiungere = new Stato(s.getDescrizione(), s.getTransizioni());
             daRitornare.addStato(statoDaAggiungere);
-            if (s==statoCorrente) {
+            if (s == statoCorrente) {
                 daRitornare.setStatoCorrente(statoDaAggiungere);
             }
         }
         return daRitornare;
     }
-    
-    public String toString(){
+
+    public String toString() {
         StringBuilder stringa = new StringBuilder();
-        for(Stato s:stati){
+        for (Stato s : stati) {
             stringa.append(s.getDescrizione() + " ");
-            stringa.append("s.corrente: " + statoCorrente.getDescrizione());
         }
+        stringa.append("s.corrente: " + statoCorrente.getDescrizione());
         return stringa.toString();
     }
 }
