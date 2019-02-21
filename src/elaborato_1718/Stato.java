@@ -22,13 +22,13 @@ public class Stato {
     public Stato(String s) {
         this.descrizione = s;
         transizioni = new Vector<>();
-        transizioniAbilitate=new ArrayList<>();
+        transizioniAbilitate = new ArrayList<>();
     }
-    
+
     public Stato(String s, Vector<Transizione> _transizioni) {
         this.descrizione = s;
         transizioni = _transizioni;
-        transizioniAbilitate=new ArrayList<>();
+        transizioniAbilitate = new ArrayList<>();
     }
 
     boolean isAbilitato(Evento[] _link) {
@@ -37,7 +37,7 @@ public class Stato {
         for (int i = 0; i < transizioni.size(); i++) {
             if (transizioni.get(i).isAbilitato(_link)) {
                 transizioniAbilitate.add(transizioni.get(i));
-                resp= true;
+                resp = true;
             }
         }
         return resp;
@@ -47,13 +47,13 @@ public class Stato {
         return transizioniAbilitate;
     }
 
-    public Stato scatta(Transizione t, Evento[] _link) {            
-        transizioneEseguita=t;
+    public Stato scatta(Transizione t, Evento[] _link) {
+        transizioneEseguita = t;
         return t.scatta(_link);
     }
 
     public Stato scatta(Evento[] _link) {
-        transizioneEseguita=transizioniAbilitate.get(0);
+        transizioneEseguita = transizioniAbilitate.get(0);
         return transizioneEseguita.scatta(_link);
     }
 
@@ -77,5 +77,4 @@ public class Stato {
         return transizioni;
     }
 
-   
 }

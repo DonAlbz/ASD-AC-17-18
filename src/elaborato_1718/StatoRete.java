@@ -26,7 +26,7 @@ public class StatoRete {
     }
 
     public String toString() {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         for (int i = 0; i < stati.length; i++) {
             s.append(stati[i].toString());
             s.append(" ");

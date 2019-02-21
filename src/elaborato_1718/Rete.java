@@ -75,7 +75,8 @@ public class Rete {
                             Transizione transizioneDaEseguire = transizioneAbilitata.get(j);
                             Cammino nuovoCamminoAttuale = new Cammino();//viene creato un nuovo cammino
                             nuovoCamminoAttuale.copiaCammino(camminoAttuale);
-                            Vector<Automa> automiAttuali=copiaAutomi(_automi);//vengono creati nuovi automi indipendenti da utilizzare su questo nuovo cammino
+                            Vector<Automa> automiAttuali=copiaAutomi(_automi);//NON COPIA CORRETTAMENTE: _automi e automiAttuali non coincidono
+                            //vengono creati nuovi automi indipendenti da utilizzare su questo nuovo cammino
                             Evento[] linkAttuali= _link.clone();//vengono creati nuovi link indipendenti da utilizzare su questo nuovo cammino
                             StatoRete nuovoStatoAttuale;
                             nuovoStatoAttuale = creaStatoCorrente(automiAttuali, linkAttuali);
@@ -172,7 +173,7 @@ public class Rete {
     private static Vector<Automa> copiaAutomi(Vector<Automa> _automi) {
         Vector<Automa> daRitornare = new Vector<>();
         for(Automa a : automi){
-            daRitornare.add((Automa) a.copia());
+            daRitornare.add(a.copia());
                 }
         return daRitornare;
     }

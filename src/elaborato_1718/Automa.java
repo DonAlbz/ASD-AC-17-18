@@ -78,12 +78,15 @@ public class Automa {
         this.statoCorrente = statoCorrente;
     }
 
-    public Automa copia(){
+    public Automa copia() {
         Automa daRitornare = new Automa(this.getDescrizione());
         for (Stato s : stati) {
-            daRitornare.addStato(new Stato(s.getDescrizione(), s.getTransizioni()));
+            Stato statoDaAggiungere = new Stato(s.getDescrizione(), s.getTransizioni());
+            daRitornare.addStato(statoDaAggiungere);
+            if (s==statoCorrente) {
+                daRitornare.setStatoCorrente(statoDaAggiungere);
+            }
         }
-        daRitornare.setStatoCorrente(this.getStatoCorrente());
         return daRitornare;
     }
 }
