@@ -89,4 +89,13 @@ public class Automa {
         }
         return daRitornare;
     }
+    
+    public String toString(){
+        StringBuilder stringa = new StringBuilder();
+        for(Stato s:stati){
+            stringa.append(s.getDescrizione() + " ");
+            stringa.append("s.corrente: " + statoCorrente.getDescrizione());
+        }
+        return stringa.toString();
+    }
 }
