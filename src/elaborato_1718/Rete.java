@@ -243,14 +243,12 @@ public class Rete {
             } else {
                 notTraiettorie.add(c);
             }
-        }
-        ArrayList<Cammino> daAggiungere = new ArrayList<>();
+        }    
         for (int j = 0; j < traiettorie.size(); j++) {
             for (int i = 0; i < notTraiettorie.size(); i++) {
                 if (traiettorie.get(j).contains(notTraiettorie.get(i).getUltimoStato())) {
                     notTraiettorie.get(i).setIsTraiettoria(true);
-                    traiettorie.add(notTraiettorie.get(i));
-                    daAggiungere.add(notTraiettorie.get(i));
+                    traiettorie.add(notTraiettorie.get(i));                    
                     notTraiettorie.remove(i);
                     i--;
                 }
