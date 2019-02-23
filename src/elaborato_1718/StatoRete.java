@@ -104,7 +104,18 @@ public class StatoRete {
     public Transizione getTransizioneEseguita() {
         return transizioneEseguita;
     }
-    
-    
+
+    /**Controllo se e' uno stato finale, quindi se ha i link vuoti
+     *
+     * @return
+     */
+    boolean isFinale() {
+        for (Evento l : link) {
+            if (l != null) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }

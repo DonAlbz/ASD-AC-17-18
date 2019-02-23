@@ -37,12 +37,13 @@ public class Rete {
         StatoRete statoRadice = creaStatoCorrente();
         scatta(camminoAttuale, statoRadice, (Vector<Automa>) automi.clone(), link.clone());
         stampaCammini();
-        
+        potatura();
+
     }
 
     private static void scatta(Cammino camminoAttuale, StatoRete statoAttuale, Vector<Automa> _automi, Evento[] _link) {
-        boolean almenoUnAutomaAbilitato;        
-        boolean automaAttualeAbilitato;       
+        boolean almenoUnAutomaAbilitato;
+        boolean automaAttualeAbilitato;
 
         if (isNuovoStato(camminoAttuale, statoAttuale)) {//fintanto che si incontra un nuovo StatoRete non finale
             ArrayList<Transizione>[] transizioneAbilitata = new ArrayList[_automi.size()];//Array di ArrayList, nella posizione i dell'array sono contenute le transizioni abilitate per l'automa i
@@ -111,8 +112,8 @@ public class Rete {
     }
 
     private static void stampaCammini() {
-        for (int i=0; i< cammini.size(); i++) {
-            int numeroCammino=i+1;
+        for (int i = 0; i < cammini.size(); i++) {
+            int numeroCammino = i + 1;
             System.out.println("numero cammino: " + numeroCammino);
             System.out.println();
             System.out.println(cammini.get(i).toString());
@@ -231,6 +232,40 @@ public class Rete {
         link[0] = null;
         System.out.println("prova");
 
+    }
+
+    private static void potatura() {
+        ArrayList<Cammino> traiettorie = new ArrayList<>();
+        ArrayList<Cammino> notTraiettorie = new ArrayList<>();
+        for (Cammino c : cammini) {
+            if (c.isTraiettoria()) {
+                traiettorie.add(c);
+            } else {
+                notTraiettorie.add(c);
+            }
+        }
+        ArrayList<Cammino> daAggiungere = new ArrayList<>();
+        for (int j = 0; j < traiettorie.size(); j++) {
+            for (int i = 0; i < notTraiettorie.size(); i++) {
+                if (traiettorie.get(j).contains(notTraiettorie.get(i).getUltimoStato())) {
+                    notTraiettorie.get(i).setIsTraiettoria(true);
+                    traiettorie.add(notTraiettorie.get(i));
+                    daAggiungere.add(notTraiettorie.get(i));
+                    notTraiettorie.remove(i);
+                    i--;
+                }
+            }
+        }
+        //traiettorie.addAll(daAggiungere);
+        System.out.println("****************************************");
+        for (int i = 0; i < traiettorie.size(); i++) {
+            int numeroCammino = i + 1;
+            System.out.println("numero traiettoria: " + numeroCammino);
+            System.out.println();
+            System.out.println(traiettorie.get(i).toString());
+            System.out.println("");
+            System.out.println("");
+        }
     }
 
 }

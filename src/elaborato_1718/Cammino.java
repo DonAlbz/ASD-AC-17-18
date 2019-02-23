@@ -14,9 +14,11 @@ import java.util.ArrayList;
 public class Cammino {
 
     private ArrayList<StatoRete> cammino;
+    private boolean isTraiettoria;
 
     public Cammino() {
         cammino = new ArrayList<>();
+        isTraiettoria=false;
     }
 
     public void add(StatoRete statoRete) {
@@ -78,4 +80,21 @@ public class Cammino {
     public ArrayList<StatoRete> getCammino() {
         return cammino;
     }
+    
+    /**Controlla se e' una traiettoria, ovvero se il suo ultimo stato e' uno stato finale
+     *
+     * @return
+     */
+    public boolean isTraiettoria(){        
+        if(cammino.get(cammino.size()-1).isFinale()){
+            isTraiettoria=true;
+        }          
+        return isTraiettoria;
+    }
+
+    public void setIsTraiettoria(boolean isTraiettoria) {
+        this.isTraiettoria = isTraiettoria;
+    }
+    
+    
 }
