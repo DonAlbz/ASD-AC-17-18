@@ -26,7 +26,7 @@ public class StatoRete {
     }
 
     public String toString() {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         for (int i = 0; i < stati.length; i++) {
             s.append(stati[i].toString());
             s.append(" ");
@@ -99,6 +99,23 @@ public class StatoRete {
 
     public void setTransizioneEseguita(Transizione transizioneEseguita) {
         this.transizioneEseguita = transizioneEseguita;
+    }
+
+    public Transizione getTransizioneEseguita() {
+        return transizioneEseguita;
+    }
+
+    /**Controllo se e' uno stato finale, quindi se ha i link vuoti
+     *
+     * @return
+     */
+    boolean isFinale() {
+        for (Evento l : link) {
+            if (l != null) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

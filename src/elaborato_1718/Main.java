@@ -26,6 +26,6 @@ public class Main {
         */
         Import.primoScenario();
         Rete.start();
-
+       // Rete.test();
     }
 }
