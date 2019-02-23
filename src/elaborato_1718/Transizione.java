@@ -83,5 +83,26 @@ public class Transizione {
     public String toString() {
         return descrizione;
     }
+
+    public int getLinkIn() {
+        return linkIn;
+    }
+
+    public Evento getEventoRichiesto() {
+        return eventoRichiesto;
+    }
+
+    public Evento[] getLinkOut() {
+        return linkOut;
+    }
+
+    public Stato getStatoDestinazione() {
+        return statoDestinazione;
+    }
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+    
     
 }
