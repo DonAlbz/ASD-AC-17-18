@@ -27,12 +27,15 @@ public class Automa {
     public Automa(String s) {
         this.descrizione = s;
         stati = new Vector<>();
+        transizioniAbilitate = new ArrayList<>();
     }
     
     boolean isAbilitato(Evento[] _link) {
         boolean resp = statoCorrente.isAbilitato(_link);
         if (resp) {
             transizioniAbilitate = statoCorrente.getTransizioniAbilitate();
+        }else{
+            transizioniAbilitate.clear();
         }
         return resp;
     }
