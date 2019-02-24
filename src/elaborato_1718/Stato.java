@@ -77,4 +77,12 @@ public class Stato {
         return transizioni;
     }
 
+    public Transizione getTransizioneEseguita() {
+        return transizioneEseguita;
+    }
+
+ 
+
+    
+    
 }

@@ -11,6 +11,7 @@ package elaborato_1718;
  */
 public class Parametri {
     public final static String EVENTO_NULLO = "\u0190";
+    public final static String A_CAPO=System.getProperty("line.separator");
     
     //public static int 
     

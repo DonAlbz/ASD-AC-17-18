@@ -18,7 +18,7 @@ public class Cammino {
 
     public Cammino() {
         cammino = new ArrayList<>();
-        isTraiettoria=false;
+        isTraiettoria = false;
     }
 
     public void add(StatoRete statoRete) {
@@ -33,12 +33,12 @@ public class Cammino {
     public String toString() {
         StringBuilder s = new StringBuilder();
         for (StatoRete stato : cammino) {
-            s.append(stato.getDescrizione());
-            s.append(System.getProperty("line.separator"));
-            if (stato.getTransizioneEseguita() != null) {
-                s.append(stato.getTransizioneEseguita().toString());
-                s.append(System.getProperty("line.separator"));
+            if (stato.getTransizionePrecedente() != null) {
+                s.append(stato.getTransizionePrecedente().toString());
+                s.append(Parametri.A_CAPO);
             }
+            s.append(stato.toString());
+            s.append(Parametri.A_CAPO);
         }
         return s.toString();
     }
@@ -49,7 +49,6 @@ public class Cammino {
         return cammino.set(cammino.size() - 1, ultimoStatoDuplicato);
     }
      */
-
     /**
      * this ha tutti gli n-1 elementi uguali a camminoAttuale (con stesso
      * indirizzo di memoria, l'ultimo elemento è ancora uguale, ma ha un
@@ -68,11 +67,11 @@ public class Cammino {
 
     void copiaCammino(Cammino camminoAttuale) {
         ArrayList<StatoRete> vecchioCammino = camminoAttuale.getCammino();
-        for (int i = 0; i < vecchioCammino.size(); i++) {//copia tutti gli elementi fino al penultimo
+        for (int i = 0; i < vecchioCammino.size(); i++) {//copia tutti gli elementi
             this.cammino.add(vecchioCammino.get(i));
-        }        
+        }
     }
-    
+
     public StatoRete getUltimoStato() {
         return this.cammino.get(this.cammino.size() - 1);
     }
@@ -80,21 +79,30 @@ public class Cammino {
     public ArrayList<StatoRete> getCammino() {
         return cammino;
     }
-    
-    /**Controlla se e' una traiettoria, ovvero se il suo ultimo stato e' uno stato finale
+
+    /**
+     * Controlla se e' una traiettoria, ovvero se il suo ultimo stato e' uno
+     * stato finale
      *
      * @return
      */
-    public boolean isTraiettoria(){        
-        if(cammino.get(cammino.size()-1).isFinale()){
-            isTraiettoria=true;
-        }          
+    public boolean isTraiettoria() {
+        if (cammino.get(cammino.size() - 1).isFinale()) {
+            isTraiettoria = true;
+        }
         return isTraiettoria;
     }
 
     public void setIsTraiettoria(boolean isTraiettoria) {
         this.isTraiettoria = isTraiettoria;
     }
-    
-    
+
+    public void togliFinoAPrimaDelloStato(StatoRete s) {
+        int j = cammino.size() - 1;
+        while (cammino.get(j) != s) {
+            cammino.remove(j);
+            j--;
+        }
+    }
+
 }

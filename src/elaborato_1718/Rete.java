@@ -7,6 +7,11 @@ package elaborato_1718;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+import java.util.Stack;
 import java.util.Vector;
 
 /**
@@ -20,6 +25,7 @@ public class Rete {
     private static Vector<Cammino> cammini;
     private static String descrizione;
     private static Evento[] link;
+    private static int numeroStati;
     //private static Transizione transizioneAbilitata;
 
     public static void creaRete(String s, Evento[] _link, Evento[] _eventi) {
@@ -34,6 +40,7 @@ public class Rete {
 
         Cammino camminoAttuale = creaNuovoCammino();//il cammino attuale diventa un nuovo cammino con gli stati degli automi e i link azzerati
         int numeroCammino = 0;
+        numeroStati = 0;
         StatoRete statoRadice = creaStatoCorrente();
         scatta(camminoAttuale, statoRadice, (Vector<Automa>) automi.clone(), link.clone());
         stampaCammini();
@@ -46,6 +53,7 @@ public class Rete {
         boolean automaAttualeAbilitato;
 
         if (isNuovoStato(camminoAttuale, statoAttuale)) {//fintanto che si incontra un nuovo StatoRete non finale
+            numeroStati++;
             ArrayList<Transizione>[] transizioneAbilitata = new ArrayList[_automi.size()];//Array di ArrayList, nella posizione i dell'array sono contenute le transizioni abilitate per l'automa i
             Transizione transizioneEseguita;
             almenoUnAutomaAbilitato = false;
@@ -57,58 +65,187 @@ public class Rete {
                 transizioneAbilitata[i] = _automi.get(i).getTransizioneAbilitata();//transizione abilitata diventa la transizione abilitata allo scatto nell'automa attuale                   
 
             }
-            for (int i = 0; i < _automi.size(); i++) {
-                if (_automi.get(i).isAbilitato(_link)) {//se l'automa attuale è abilitato
-                    if (transizioneAbilitata[i] != null && transizioneAbilitata[i].size() == 1) {
-                        //setRete(statoAttuale);
-                        transizioneEseguita = _automi.get(i).scatta(_link);//l'automa attuale viene fatto scattare e transizione eseguita diventa la transizione che è stata eseguita
-                        statoAttuale.setTransizioneEseguita(transizioneEseguita);//la transizione eseguita viene aggiunta allo StatoRete attuale
-                        camminoAttuale.add(statoAttuale);//Lo StatoRete prima dello scatto viene aggiunto al cammino attuale                    
-                        StatoRete statoDopoLoScatto = creaStatoCorrente(_automi, _link);
-                        scatta(camminoAttuale, statoDopoLoScatto, _automi, _link);
-                    }
-                    if (transizioneAbilitata[i] != null && transizioneAbilitata[i].size() > 1) {//Se lo StatoRete attuale ha più di una transizione abilitata
-                        for (int j = 0; j < transizioneAbilitata[i].size(); j++) {//vengono fatte scattare tutte, ognuna su un nuovo cammino
-                            //setRete(statoAttuale);
-                            Transizione transizioneDaEseguire = transizioneAbilitata[i].get(j);
-                            Cammino nuovoCamminoAttuale = new Cammino();//viene creato un nuovo cammino
-                            nuovoCamminoAttuale.copiaCammino(camminoAttuale);
-                            Vector<Automa> automiAttuali = copiaAutomi(_automi);
-                            //vengono creati nuovi automi indipendenti da utilizzare su questo nuovo cammino, clonati da _automi
-                            Evento[] linkAttuali = _link.clone();//vengono creati nuovi link indipendenti da utilizzare su questo nuovo cammino
-                            StatoRete nuovoStatoAttuale;
-                            nuovoStatoAttuale = creaStatoCorrente(automiAttuali, linkAttuali);//viene clonato un nuovo stato corrente
-                            transizioneEseguita = automiAttuali.get(i).scatta(transizioneDaEseguire, linkAttuali);//viene fatta scattare la transizione da eseguire
-                            nuovoStatoAttuale.setTransizioneEseguita(transizioneEseguita);//la transizione eseguita viene aggiunta allo StatoRete attuale
-                            nuovoCamminoAttuale.add(nuovoStatoAttuale);//Lo StatoRete attuale viene aggiunto al cammino attuale                    
-                            StatoRete statoDopoLoScatto = creaStatoCorrente(automiAttuali, linkAttuali);//creazione dello stato corrente per la verifica nel while
-                            scatta(nuovoCamminoAttuale, statoDopoLoScatto, automiAttuali, linkAttuali);
-                        }
-                    }
-                }
-            }
-            if (!almenoUnAutomaAbilitato) {//se nessuno degli automi è abilitato allo scatto               
+            if (almenoUnAutomaAbilitato) {
+                eseguiTransizioni(transizioneAbilitata.clone(), _automi, _link, statoAttuale, camminoAttuale);
+//                for (int i = 0; i < _automi.size(); i++) {
+//                    if (_automi.get(i).isAbilitato(_link)) {//se l'automa attuale è abilitato
+//                        if (transizioneAbilitata[i].size() == 1) {
+//                            //eseguiTransizione(statoAttuale, camminoAttuale, _link, _automi.get(i));
+//                            transizioneEseguita = _automi.get(i).scatta(_link);//l'automa attuale viene fatto scattare e transizione eseguita diventa la transizione che è stata eseguita
+//                            statoAttuale.setTransizioneEseguita(transizioneEseguita);//la transizione eseguita viene aggiunta allo StatoRete attuale
+//                            camminoAttuale.add(statoAttuale);//Lo StatoRete prima dello scatto viene aggiunto al cammino attuale                    
+//                            StatoRete statoDopoLoScatto = creaStatoCorrente(_automi, _link);
+//                            scatta(camminoAttuale, statoDopoLoScatto, _automi, _link);
+//                        }
+//                        if (transizioneAbilitata[i].size() > 1) {//Se lo StatoRete attuale ha più di una transizione abilitata
+//                            for (int j = 0; j < transizioneAbilitata[i].size(); j++) {//vengono fatte scattare tutte, ognuna su un nuovo cammino
+//                                //setRete(statoAttuale);
+//                                Transizione transizioneDaEseguire = transizioneAbilitata[i].get(j);
+//                                Cammino nuovoCamminoAttuale = new Cammino();//viene creato un nuovo cammino
+//                                nuovoCamminoAttuale.copiaCammino(camminoAttuale);
+//                                Vector<Automa> automiAttuali = copiaAutomi(_automi);
+//                                //vengono creati nuovi automi indipendenti da utilizzare su questo nuovo cammino, clonati da _automi
+//                                Evento[] linkAttuali = _link.clone();//vengono creati nuovi link indipendenti da utilizzare su questo nuovo cammino
+//                                StatoRete nuovoStatoAttuale;
+//                                nuovoStatoAttuale = creaStatoCorrente(automiAttuali, linkAttuali, statoAttuale.getNumero());//viene clonato un nuovo stato corrente
+//                                transizioneEseguita = automiAttuali.get(i).scatta(transizioneDaEseguire, linkAttuali);//viene fatta scattare la transizione da eseguire
+//                                nuovoStatoAttuale.setTransizioneEseguita(transizioneEseguita);//la transizione eseguita viene aggiunta allo StatoRete attuale
+//                                nuovoCamminoAttuale.add(nuovoStatoAttuale);//Lo StatoRete attuale viene aggiunto al cammino attuale                    
+//                                StatoRete statoDopoLoScatto = creaStatoCorrente(automiAttuali, linkAttuali);//creazione dello stato corrente per la verifica nel while
+//                                scatta(nuovoCamminoAttuale, statoDopoLoScatto, automiAttuali, linkAttuali);
+//                            }
+//                        }
+//                    }
+//                }
+            } else {//se nessuno degli automi è abilitato allo scatto               
                 camminoAttuale.add(statoAttuale);//lo StatoRete attuale è uno stato finale
                 cammini.add(camminoAttuale);
-//                System.out.println("numero cammino: " + cammini.size());
-//                System.out.println();
-//                System.out.println(camminoAttuale.toString());
-//                System.out.println("");
-//                System.out.println("");
+
             }
         } else {//è il caso del LOOP: lo stato corrente viene aggiunto al cammino (è uguale allo ad un altro stato del cammino)
             camminoAttuale.add(statoAttuale);
             cammini.add(camminoAttuale);
-//            System.out.println("numero cammino: " + cammini.size());
-//            System.out.println();
-//            System.out.println(camminoAttuale.toString());
-//            System.out.println("");
-//            System.out.println("");
         }
-//        cammini.add(camminoAttuale);
-//        System.out.println(camminoAttuale.toString());
-//        System.out.println("");
-//        System.out.println("");
+    }
+
+    private static void eseguiTransizioni(ArrayList<Transizione>[] _transizioneAbilitata, Vector<Automa> _automi,
+            Evento[] _link, StatoRete statoAttuale, Cammino camminoAttuale) {
+        ArrayList<Transizione>[] transizioneAbilitata = _transizioneAbilitata;
+        Transizione transizioneEseguita;
+        int numeroTransizioni = 0;
+        for (ArrayList<Transizione> t : transizioneAbilitata) {
+            numeroTransizioni += t.size();
+        }
+        for (int i = 0; i < _automi.size(); i++) {
+            if (_automi.get(i).isAbilitato(_link)) {//se l'automa attuale è abilitato
+                if (numeroTransizioni == 1) {
+                    //eseguiTransizione(statoAttuale, camminoAttuale, _link, _automi.get(i));
+                    transizioneEseguita = _automi.get(i).scatta(_link);//l'automa attuale viene fatto scattare e transizione eseguita diventa la transizione che è stata eseguita
+                    statoAttuale.setTransizioneEseguita(transizioneEseguita);//la transizione eseguita viene aggiunta allo StatoRete attuale
+                    camminoAttuale.add(statoAttuale);//Lo StatoRete prima dello scatto viene aggiunto al cammino attuale                    
+                    StatoRete statoDopoLoScatto = creaStatoCorrente(_automi, _link);
+                    scatta(camminoAttuale, statoDopoLoScatto, _automi, _link);
+                }
+                if (numeroTransizioni > 1) {//Se lo StatoRete attuale ha più di una transizione abilitata
+                    for (int j = 0; j < transizioneAbilitata[i].size(); j++) {//vengono fatte scattare tutte, ognuna su un nuovo cammino
+                        //setRete(statoAttuale);
+                        Transizione transizioneDaEseguire = transizioneAbilitata[i].get(j);
+                        Cammino nuovoCamminoAttuale = new Cammino();//viene creato un nuovo cammino
+                        nuovoCamminoAttuale.copiaCammino(camminoAttuale);
+                        Vector<Automa> automiAttuali = copiaAutomi(_automi);
+                        //vengono creati nuovi automi indipendenti da utilizzare su questo nuovo cammino, clonati da _automi
+                        Evento[] linkAttuali = _link.clone();//vengono creati nuovi link indipendenti da utilizzare su questo nuovo cammino
+                        StatoRete nuovoStatoAttuale;
+                        nuovoStatoAttuale = creaStatoCorrente(automiAttuali, linkAttuali, statoAttuale.getNumero());//viene clonato un nuovo stato corrente
+                        transizioneEseguita = automiAttuali.get(i).scatta(transizioneDaEseguire, linkAttuali);//viene fatta scattare la transizione da eseguire
+                        nuovoStatoAttuale.setTransizioneEseguita(transizioneEseguita);//la transizione eseguita viene aggiunta allo StatoRete attuale
+                        nuovoCamminoAttuale.add(nuovoStatoAttuale);//Lo StatoRete attuale viene aggiunto al cammino attuale                    
+                        StatoRete statoDopoLoScatto = creaStatoCorrente(automiAttuali, linkAttuali);//creazione dello stato corrente per la verifica nel while
+                        scatta(nuovoCamminoAttuale, statoDopoLoScatto, automiAttuali, linkAttuali);
+                    }
+                }
+            }
+        }
+
+    }
+
+    public static void start2() {
+        scatta2();
+        stampaCammini();
+        potatura();
+
+    }
+
+    public static void scatta2() {
+        Set<StatoRete> visitato = new LinkedHashSet<StatoRete>();
+        Stack<StatoRete> pilaStato = new Stack<>();//pila dei nuovi stati
+        Stack<StatoRete> pilaDiramazioni = new Stack<StatoRete>();//coda degli stati che hanno più di una transizione in uscita
+        Stack<Cammino> pilaCammino = new Stack<>();
+        Cammino camminoAttuale = creaNuovoCammino();//il cammino attuale diventa un nuovo cammino con gli stati degli automi e i link azzerati
+        LinkedList<StatoRete> stati = new LinkedList<>();
+        int numeroCammino = 0;
+        numeroStati = 0;
+
+        StatoRete statoRadice = creaStatoCorrente();
+        pilaStato.push(statoRadice);
+        pilaCammino.push(camminoAttuale);
+        while (!pilaStato.isEmpty()) {
+            StatoRete statoAttuale = pilaStato.pop();
+//            Cammino camminoTest=pilaCammino.pop();
+
+            if (!stati.contains(statoAttuale)) {
+                statoAttuale.setNumero(stati.size());
+                stati.add(statoAttuale);
+                camminoAttuale.add(statoAttuale);
+//                System.out.println(statoAttuale.toString());
+                setRete(statoAttuale);
+                if (statoAttuale.isAbilitato(automi)) {
+                    ArrayList<Transizione>[] transizioniAbilitate = new ArrayList[automi.size()];
+                    int numeroTransizioniAbilitate = 0;
+                    for (int i = 0; i < automi.size(); i++) {//se nessun automa è già scattato, si itera su tutti gli automi                        
+                        automi.get(i).isAbilitato(link);
+                        transizioniAbilitate[i] = automi.get(i).getTransizioneAbilitata();//transizione abilitata diventa la transizione abilitata allo scatto nell'automa attuale                   
+                        numeroTransizioniAbilitate += transizioniAbilitate[i].size();
+                    }
+                    ArrayList<StatoRete> statiDopoLoScatto = new ArrayList<>();
+                    Transizione transizioneEseguita;
+                    StatoRete copiaStatoAttuale;
+                    if (numeroTransizioniAbilitate == 1) {
+                        for (int i = 0; i < automi.size(); i++) {
+                            if (automi.get(i).isAbilitato(link)) {
+                                transizioneEseguita = automi.get(i).scatta(link);//l'automa attuale viene fatto scattare e transizione eseguita diventa la transizione che è stata eseguita
+//                                statoAttuale.setTransizionePrecedente(transizioneEseguita);//la transizione eseguita viene aggiunta allo StatoRete attuale
+                                StatoRete statoDopoLoScatto = creaStatoCorrente(automi, link);
+                                statoDopoLoScatto.setTransizionePrecedente(transizioneEseguita);
+                                statiDopoLoScatto.add(statoDopoLoScatto);
+                                setRete(statoAttuale);
+                            }
+                        }
+                    } else {
+                        copiaStatoAttuale = creaStatoCorrente(automi, link);
+
+                        //TODO: settare transizione
+                        for (int i = 0; i < automi.size(); i++) {
+                            for (int j = 0; j < transizioniAbilitate[i].size(); j++) {//vengono fatte scattare tutte, ognuna su un nuovo cammino
+                                setRete(statoAttuale);
+                                Transizione transizioneDaEseguire = transizioniAbilitate[i].get(j);
+                                transizioneEseguita = automi.get(i).scatta(transizioneDaEseguire, link);//viene fatta scattare la transizione da eseguire
+                                copiaStatoAttuale.setTransizionePrecedente(transizioneEseguita);
+                                StatoRete statoDopoLoScatto = creaStatoCorrente(automi, link);
+                                statoDopoLoScatto.setTransizionePrecedente(transizioneEseguita);
+                                statiDopoLoScatto.add(statoDopoLoScatto);
+                                pilaDiramazioni.add(statoAttuale);
+                            }
+                        }
+                        pilaDiramazioni.pop();
+                    }
+
+                    for (StatoRete s : statiDopoLoScatto) {
+                        pilaStato.push(s);
+                    }
+                } else {
+                    Cammino nuovoCammino = new Cammino();
+                    statoAttuale.setNumero(stati.size());
+                    nuovoCammino.copiaCammino(camminoAttuale);
+                    cammini.add(nuovoCammino);
+                    if (!pilaDiramazioni.isEmpty()) {
+                        camminoAttuale.togliFinoAPrimaDelloStato(pilaDiramazioni.pop());//gli ultimi elementi del cammini vengono rimossi finchè non si incontra il primo elemento della coda
+                    }
+                }
+            } else {
+                //TODO: loop nuovoCammino;
+                Cammino nuovoCammino = new Cammino();
+                statoAttuale.setNumero(stati.size());
+                camminoAttuale.add(statoAttuale);
+                nuovoCammino.copiaCammino(camminoAttuale);
+                cammini.add(nuovoCammino);
+                if (!pilaDiramazioni.isEmpty()) {
+                    camminoAttuale.togliFinoAPrimaDelloStato(pilaDiramazioni.pop());//gli ultimi elementi del cammini vengono rimossi finchè non si incontra il primo elemento della coda
+                }
+
+            }
+        }
+
     }
 
     private static void stampaCammini() {
@@ -117,9 +254,14 @@ public class Rete {
             System.out.println("numero cammino: " + numeroCammino);
             System.out.println();
             System.out.println(cammini.get(i).toString());
-            System.out.println("");
-            System.out.println("");
+            System.out.println();
         }
+    }
+
+    private static void eseguiTransizione(StatoRete s, Cammino c, Evento[] _link, Automa a) {
+        Transizione transizioneEseguita = a.scatta(_link);//l'automa attuale viene fatto scattare e transizione eseguita diventa la transizione che è stata eseguita
+        s.setTransizioneEseguita(transizioneEseguita);//la transizione eseguita viene aggiunta allo StatoRete attuale
+        c.add(s);//Lo StatoRete prima dello scatto viene aggiunto al cammino attuale    
     }
 
     private static Cammino scattaR(Cammino camminoAttuale) {
@@ -135,7 +277,7 @@ public class Rete {
         for (int i = 0; i < statoAutomi.length; i++) {
             statoAutomi[i] = automi.get(i).getStatoCorrente();
         }
-        return new StatoRete(link.clone(), statoAutomi);
+        return new StatoRete(link.clone(), statoAutomi, numeroStati);
     }
 
     private static StatoRete creaStatoCorrente(Vector<Automa> _automi, Evento[] _link) {
@@ -143,7 +285,15 @@ public class Rete {
         for (int i = 0; i < statoAutomi.length; i++) {
             statoAutomi[i] = _automi.get(i).getStatoCorrente();
         }
-        return new StatoRete(_link.clone(), statoAutomi);
+        return new StatoRete(_link.clone(), statoAutomi, numeroStati);
+    }
+
+    private static StatoRete creaStatoCorrente(Vector<Automa> _automi, Evento[] _link, int nStato) {
+        Stato[] statoAutomi = new Stato[_automi.size()];
+        for (int i = 0; i < statoAutomi.length; i++) {
+            statoAutomi[i] = _automi.get(i).getStatoCorrente();
+        }
+        return new StatoRete(_link.clone(), statoAutomi, nStato);
     }
 
     /*private static void addStatoAlCammino(int numeroCammino, StatoRete statoRete) {
@@ -243,26 +393,27 @@ public class Rete {
             } else {
                 notTraiettorie.add(c);
             }
-        }    
+        }
         for (int j = 0; j < traiettorie.size(); j++) {
             for (int i = 0; i < notTraiettorie.size(); i++) {
                 if (traiettorie.get(j).contains(notTraiettorie.get(i).getUltimoStato())) {
                     notTraiettorie.get(i).setIsTraiettoria(true);
-                    traiettorie.add(notTraiettorie.get(i));                    
+                    traiettorie.add(notTraiettorie.get(i));
                     notTraiettorie.remove(i);
                     i--;
                 }
             }
         }
-        //traiettorie.addAll(daAggiungere);
         System.out.println("****************************************");
+        System.out.println();
+        System.out.println();
         for (int i = 0; i < traiettorie.size(); i++) {
             int numeroCammino = i + 1;
             System.out.println("numero traiettoria: " + numeroCammino);
             System.out.println();
             System.out.println(traiettorie.get(i).toString());
-            System.out.println("");
-            System.out.println("");
+            System.out.println();
+            System.out.println();
         }
     }
 
