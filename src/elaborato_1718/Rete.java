@@ -156,11 +156,10 @@ public class Rete {
 
     }
 
-    public static void scatta2() {
-        Set<StatoRete> visitato = new LinkedHashSet<StatoRete>();
+    public static void scatta2() {       
         Stack<StatoRete> pilaStato = new Stack<>();//pila dei nuovi stati
-        Stack<StatoRete> pilaDiramazioni = new Stack<StatoRete>();//coda degli stati che hanno più di una transizione in uscita
-        Stack<Cammino> pilaCammino = new Stack<>();
+        Stack<StatoRete> pilaDiramazioni = new Stack<StatoRete>();//pila degli stati che hanno più di una transizione in uscita
+        //Stack<Cammino> pilaCammino = new Stack<>();
         Cammino camminoAttuale = creaNuovoCammino();//il cammino attuale diventa un nuovo cammino con gli stati degli automi e i link azzerati
         LinkedList<StatoRete> stati = new LinkedList<>();
         int numeroCammino = 0;
@@ -168,12 +167,12 @@ public class Rete {
 
         StatoRete statoRadice = creaStatoCorrente();
         pilaStato.push(statoRadice);
-        pilaCammino.push(camminoAttuale);
+       // pilaCammino.push(camminoAttuale);
         while (!pilaStato.isEmpty()) {
             StatoRete statoAttuale = pilaStato.pop();
 //            Cammino camminoTest=pilaCammino.pop();
 
-            if (!stati.contains(statoAttuale)) {
+            if (!stati.contains(statoAttuale)) {//se è uno stato nuovo
                 statoAttuale.setNumero(stati.size());
                 stati.add(statoAttuale);
                 camminoAttuale.add(statoAttuale);
@@ -204,7 +203,7 @@ public class Rete {
                     } else {
                         copiaStatoAttuale = creaStatoCorrente(automi, link);
 
-                        //TODO: settare transizione
+                        
                         for (int i = 0; i < automi.size(); i++) {
                             for (int j = 0; j < transizioniAbilitate[i].size(); j++) {//vengono fatte scattare tutte, ognuna su un nuovo cammino
                                 setRete(statoAttuale);
@@ -224,8 +223,9 @@ public class Rete {
                         pilaStato.push(s);
                     }
                 } else {
+                    //stato senza transizioni abilitate
                     Cammino nuovoCammino = new Cammino();
-                    statoAttuale.setNumero(stati.size());
+                    statoAttuale.setNumero(stati.size()-1);
                     nuovoCammino.copiaCammino(camminoAttuale);
                     cammini.add(nuovoCammino);
                     if (!pilaDiramazioni.isEmpty()) {
@@ -235,7 +235,7 @@ public class Rete {
             } else {
                 //TODO: loop nuovoCammino;
                 Cammino nuovoCammino = new Cammino();
-                statoAttuale.setNumero(stati.size());
+                statoAttuale.setNumero(stati.indexOf(statoAttuale));
                 camminoAttuale.add(statoAttuale);
                 nuovoCammino.copiaCammino(camminoAttuale);
                 cammini.add(nuovoCammino);
