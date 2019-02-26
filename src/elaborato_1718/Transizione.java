@@ -78,8 +78,12 @@ public class Transizione {
         }
         return statoDestinazione;
     }
-
-    public String toString() {
+    
+    public String getDescrizione() {
+        return descrizione;
+    }
+    
+    public String toString(){
         return descrizione;
     }
 }

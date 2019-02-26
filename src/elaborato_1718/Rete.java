@@ -140,5 +140,9 @@ public class Rete {
     public static void setLink(int i, Evento evento) {
         link[i] = evento;
     }
+    
+    public static Vector<Automa> getAutomi(){
+        return automi;
+    }
 
 }

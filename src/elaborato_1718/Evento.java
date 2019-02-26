@@ -25,6 +25,9 @@ public class Evento {
     }
 
     public String getDescrizione() {
+        if(descrizione == null){
+            return Parametri.NULL;
+        }
         return descrizione;
     }
     

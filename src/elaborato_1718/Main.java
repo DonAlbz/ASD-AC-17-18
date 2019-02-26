@@ -6,9 +6,7 @@
 package elaborato_1718;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Vector;
-
+        
 public class Main {
 
     public static void main(String[] args) throws IOException {
@@ -16,7 +14,7 @@ public class Main {
         Import inizio = new Import();
         inizio.primoScenario_nuovo();
         //Import.primoScenario();
-        //Rete.start();
+        Rete.start();
 
     }
 }

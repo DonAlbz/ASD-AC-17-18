@@ -76,5 +76,9 @@ public class Automa {
         }
         return cercato;
     }
+    
+    public Vector<Stato> getStati(){
+        return stati;
+    }
 
 }

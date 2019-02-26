@@ -25,16 +25,24 @@ public class Import {
     public void primoScenario_nuovo() {
 //        String[] automi = getAutomi(file);
 //        String[] linkString = getLink(file);
-//        String[] eventi = getEventi(file);
+//        String[] eventiString = getEventi(file);
+//        Evento[] listaEventi = new Evento[eventiString.length];
+//        for (int j = 0; j < eventiString.length; j++) {
+//            Evento evento = new Evento(eventiString[j]);
+//            listaEventi[j] = evento;
+//        }
 //        Automa automa = new Automa(automi[0]);
 //        ArrayList<String> prova = getStatiDaAutoma(automa, file);
 //        ArrayList<String> prova2 = getNomiTransizioni(automa, file);
 //        ArrayList<String> prova3 = getStatiDestinazioneDiTransizione(automa, file);
-//        //System.out.println(getStatoDestinazioneDiTransizione(automa, prova2.get(0), file));
-//        String eventoRichiesto = getEventoRichiesto(automa, prova2.get(0), file);
-//        String[] eventiInUscitaString = getEventiInUscita(automa, prova2.get(0), file);
-//        Evento[] eventiInUscita = getEventiInUscita(eventi, eventiInUscitaString);
-//        System.out.println(getLinkInDiTransizione(automa, prova2.get(0),linkString, file));
+//        System.out.println(getStatoDestinazioneDiTransizione(automa, prova2.get(0), file));
+//        String eventoRichiestoString = getEventoRichiesto(automa, prova2.get(1), file);
+//        System.out.println("evento stringa richiesto: " + eventoRichiestoString);
+//        Evento eventoRichiesto = getEventoRichiesto(eventoRichiestoString, listaEventi);
+//        System.out.println("evento richiesto: " + eventoRichiesto.getDescrizione());
+//        String[] eventiInUscitaString = getEventiInUscita(automa, prova2.get(1), file);
+//        Evento[] eventiInUscita = getEventiInUscita(eventiString, eventiInUscitaString);
+//        System.out.println(getLinkInDiTransizione(automa, prova2.get(1),linkString, file));
 //        System.out.println();
 //        if (eventiInUscita == null) {
 //            System.out.println("null");
@@ -44,6 +52,13 @@ public class Import {
 //                System.out.println(evento.toString());
 //            }
 //        }
+//        Automa automa = new Automa(automi[1]);
+//        Stato stato = new Stato("33");
+//        ArrayList<String> transizioniUscenti = getStatiDiPartenza(stato, automa, file);
+//        for(int i = 0; i<transizioniUscenti.size(); i++){
+//            System.out.println(transizioniUscenti.get(i));
+//        }
+        
 
         
         Vector<Evento> eventiIn = new Vector<>();
@@ -61,7 +76,7 @@ public class Import {
             Evento evento = new Evento(eventiString[j]);
             eventi[j] = evento;
         }
-        
+
         Rete.creaRete("primo scenario", link, eventi);
 
         // Ciclo di inizializzazione degli automi
@@ -69,46 +84,49 @@ public class Import {
             // aggiunta dell'automa
             Automa automa = new Automa(automi[i]);
             Rete.addAutoma(automa);
+            System.out.println("Automa: "+automa.getDescrizione());
 
             // aggiunta degli stati di automa
             ArrayList<String> statiAutoma = getStatiDaAutoma(automa, file);
             for (int j = 0; j < statiAutoma.size(); j++) {
                 Stato stato = new Stato(statiAutoma.get(j));
                 automa.addStato(stato);
+                System.out.println("Stato: "+stato.getDescrizione());
             }
             
-            // aggiunta delle transizione di automa
-            ArrayList<String> nomiTransizioni = getNomiTransizioni(automa, file);
-            for(int x=0; x<nomiTransizioni.size(); x++){
-                
-//                Evento[] eventoScatenato = new Evento[link.length];
-//                String[] eventoScatenatoString = getEventiInUscita(automa, nomiTransizioni.get(x), file);
-//                for(int y=0; y<eventoScatenato.length; y++){
-//                    eventoScatenato[y] = new Evento(eventoScatenatoString[y]);
-//                }
-                
-                // parametri per creare l'istanza di Transizione
-                String nomeTransizione = nomiTransizioni.get(x);
-                String nomeStatoDestinazione = getStatoDestinazioneDiTransizione(automa, nomiTransizioni.get(x), file);
-                Stato statoDestinazione = automa.getStato(nomeStatoDestinazione);
-                int posizioneLinkIn = getLinkInDiTransizione(automa, nomiTransizioni.get(x), linkString, file);
-                String eventoRichiesto = getEventoRichiesto(automa, nomiTransizioni.get(x), file);
-                // SISTEMARE EVENTO RICHIESTO in EVENTO
-                String[] eventiInUscitaString = getEventiInUscita(automa, nomiTransizioni.get(x), file);
-                Evento[] eventiInUscita = getEventiInUscita(eventiString, eventiInUscitaString);
-                
-                Transizione transizione = new Transizione(nomeTransizione, statoDestinazione, posizioneLinkIn, eventoRichiesto, eventiInUscita);
-                // add transizione
-            }
-            
-            //ArrayList<String> statiDestinazioneDiTransizioni = getStatiDestinazioneDiTransizione(automa, file);
-
         }
         
-        
+        // aggiunta delle transizioni per gli stati uscenti
+        Vector<Automa> automiInseriti = Rete.getAutomi();
+        for (int x = 0; x < automiInseriti.size(); x++) {
+            Vector<Stato> statiInseriti = automiInseriti.get(x).getStati();
+            for (int y = 0; y < statiInseriti.size(); y++) {
+                Stato stato = statiInseriti.get(y);
+                ArrayList<String> transizioniUscenti = getStatiDiPartenza(stato, automiInseriti.get(x), file);
+                if (!transizioniUscenti.isEmpty()) {
+                    for (int z = 0; z < transizioniUscenti.size(); z++) {
+                        // parametri per creare l'istanza di Transizione
+                        String nomeTransizione = transizioniUscenti.get(z);
+                        String nomeStatoDestinazione = getStatoDestinazioneDiTransizione(automiInseriti.get(x), transizioniUscenti.get(z), file);
+                        Stato statoDestinazione = automiInseriti.get(x).getStato(nomeStatoDestinazione);
+                        int posizioneLinkIn = getLinkInDiTransizione(automiInseriti.get(x), transizioniUscenti.get(z), linkString, file);
+                        String eventoRichiestoString = getEventoRichiesto(automiInseriti.get(x), transizioniUscenti.get(z), file);
+                        Evento eventoRichiesto = getEventoRichiesto(eventoRichiestoString, eventi);
+                        String[] eventiInUscitaString = getEventiInUscita(automiInseriti.get(x), transizioniUscenti.get(z), file);
+                        Evento[] eventiInUscita = getEventiInUscita(eventiString, eventiInUscitaString);
+
+                        Transizione transizione = new Transizione(nomeTransizione, statoDestinazione, posizioneLinkIn, eventoRichiesto, eventiInUscita);
+
+                        stato.addTransazione(transizione);
+                        System.out.println(transizione.getDescrizione());
+
+                    }
+                }
+            }
+        }
     }
 
-    static void primoScenario() {
+    public static void primoScenario() {
 
         Automa c2 = new Automa("c2");
         Stato s20 = new Stato("20");
@@ -303,8 +321,21 @@ public class Import {
         return eventoRichiesto;
     }
     
-    // RIPARTIRE DA QUA - TRADURRE L'STRING EVENTO IN EVENTO 
-    public Evento getEventoRichiesto()
+    /**
+     *
+     * @param eventoRichiestoString stringa che identifica l'evento in ingresso
+     * @param listaEventi lista contenente gli eventi della rete
+     * @return oggetto Evento in base alla stringa
+     */
+    public Evento getEventoRichiesto(String eventoRichiestoString, Evento[] listaEventi){
+        Evento evento = null;
+        for(int i = 0; i<listaEventi.length; i++){
+            if(listaEventi[i].getDescrizione().equalsIgnoreCase(eventoRichiestoString)){
+                evento = listaEventi[i];
+            }
+        }
+        return evento;
+    }
     
     public String[] getEventiInUscita(Automa automa, String nomeTransizione, Vector<String> fileInput){
         String[] eventiInUscita = null;
@@ -363,7 +394,6 @@ public class Import {
                 for (int j = 0; j < eventi.length; j++) {
                     if (eventiInUscita[i].equalsIgnoreCase(eventi[j])) {
                         String daCopiare = eventiInUscita[i];
-                        System.out.println(daCopiare);
                         eventiFinale[j] = new Evento(daCopiare);
                     }
                 }
@@ -386,6 +416,7 @@ public class Import {
      *
      * @param automa automa in cui e' presente la trasizione considerata
      * @param nomeTransizione e' il nome della transizione che sto considerando
+     * @param elencoLink
      * @param fileInput
      * @return la funzione ritorna un int in cui, se esiste, ritorna la posizione del link "attivatore" della transizione
      * altrimenti ritorna -1. Di riferimento si veda il metodo getLink in cui si calcolano quanti link ci sono nella rete
@@ -418,6 +449,33 @@ public class Import {
             }
         }
         return posizioneLink;
+    }
+    
+    /**
+     *
+     * @param stato stato in cui si vuole cercare se esce qualche transizione.
+     * @param automa automa dove e' contenuto lo stato considerato
+     * @param fileInput fine inpunt contenente il txt
+     * @return viene ritornata una striga con il nome della transizione che esce dallo stato, null se non esce alcuna transizione
+     */
+    public ArrayList<String> getStatiDiPartenza(Stato stato, Automa automa, Vector<String> fileInput){
+        ArrayList<String> transizioniUscenti = new ArrayList<>();
+        for(int i = 0; i<fileInput.size(); i++){
+            if(fileInput.get(i).equals(automa.getDescrizione()) && i!=2){
+                int j = i+3;
+                while(fileInput.get(j).length() != 0){
+                    String daSplittare = fileInput.get(j);
+                    String[] splittato = daSplittare.split("\t");
+                    String statoDaConfrontare = splittato[0];
+                    if(statoDaConfrontare.equalsIgnoreCase(stato.getDescrizione())){
+                        String transizione = splittato[1];
+                        transizioniUscenti.add(transizione);
+                    }
+                    j++;
+                }
+            }
+        }
+        return transizioniUscenti;
     }
 
 }

@@ -52,6 +52,7 @@ public class Stato {
         return descrizione.equals(s2.getDescrizione());
     }
 
+    @Override
     public String toString() {
         return descrizione;
     }
