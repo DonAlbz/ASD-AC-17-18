@@ -22,6 +22,10 @@ public class StatoRete extends StatoReteAbstract {
         super(link, stati, _numero);
     }
 
+    public StatoRete(StatoRete statoDaClonare) {
+        super(statoDaClonare.getLink().clone(), statoDaClonare.getStati().clone(), statoDaClonare.getNumero());
+    }
+    
     public void setTransizioneEseguita(Transizione transizioneEseguita) {
         this.transizioneEseguita = transizioneEseguita;
     }

@@ -26,6 +26,7 @@ public class Rete {
     private static String descrizione;
     private static Evento[] link;
     private static int numeroStati;
+    private static SpazioComportamentale spazioC;
     //private static Transizione transizioneAbilitata;
 
     public static void creaRete(String s, Evento[] _link, Evento[] _eventi) {
@@ -34,6 +35,7 @@ public class Rete {
         eventi = _eventi;
         link = _link;
         cammini = new Vector<Cammino>();
+        spazioC = new SpazioComportamentale();
     }
 
     public static void start() {
@@ -153,10 +155,14 @@ public class Rete {
         scatta2();
         stampaCammini();
         potatura();
-
+        System.out.println(spazioC.toString());
     }
 
-    public static void scatta2() {       
+    /**
+     * Creazione dei cammini e dello spazio comportamentale
+     *
+     */
+    public static void scatta2() {
         Stack<StatoRete> pilaStato = new Stack<>();//pila dei nuovi stati
         Stack<StatoRete> pilaDiramazioni = new Stack<StatoRete>();//pila degli stati che hanno più di una transizione in uscita
         //Stack<Cammino> pilaCammino = new Stack<>();
@@ -167,7 +173,7 @@ public class Rete {
 
         StatoRete statoRadice = creaStatoCorrente();
         pilaStato.push(statoRadice);
-       // pilaCammino.push(camminoAttuale);
+        // pilaCammino.push(camminoAttuale);
         while (!pilaStato.isEmpty()) {
             StatoRete statoAttuale = pilaStato.pop();
 //            Cammino camminoTest=pilaCammino.pop();
@@ -176,6 +182,7 @@ public class Rete {
                 statoAttuale.setNumero(stati.size());
                 stati.add(statoAttuale);
                 camminoAttuale.add(statoAttuale);
+                spazioC.aggiungiVertice(statoAttuale);
 //                System.out.println(statoAttuale.toString());
                 setRete(statoAttuale);
                 if (statoAttuale.isAbilitato(automi)) {
@@ -203,7 +210,6 @@ public class Rete {
                     } else {
                         copiaStatoAttuale = creaStatoCorrente(automi, link);
 
-                        
                         for (int i = 0; i < automi.size(); i++) {
                             for (int j = 0; j < transizioniAbilitate[i].size(); j++) {//vengono fatte scattare tutte, ognuna su un nuovo cammino
                                 setRete(statoAttuale);
@@ -221,11 +227,12 @@ public class Rete {
 
                     for (StatoRete s : statiDopoLoScatto) {
                         pilaStato.push(s);
+                        spazioC.aggiungiLato(statoAttuale, s);
                     }
                 } else {
                     //stato senza transizioni abilitate
                     Cammino nuovoCammino = new Cammino();
-                    statoAttuale.setNumero(stati.size()-1);
+                    statoAttuale.setNumero(stati.size() - 1);
                     nuovoCammino.copiaCammino(camminoAttuale);
                     cammini.add(nuovoCammino);
                     if (!pilaDiramazioni.isEmpty()) {
@@ -236,7 +243,9 @@ public class Rete {
                 //TODO: loop nuovoCammino;
                 Cammino nuovoCammino = new Cammino();
                 statoAttuale.setNumero(stati.indexOf(statoAttuale));
+                StatoRete statoPrecedente = camminoAttuale.getUltimoStato();
                 camminoAttuale.add(statoAttuale);
+                spazioC.aggiungiLato(statoPrecedente, statoAttuale);
                 nuovoCammino.copiaCammino(camminoAttuale);
                 cammini.add(nuovoCammino);
                 if (!pilaDiramazioni.isEmpty()) {
@@ -404,6 +413,26 @@ public class Rete {
                 }
             }
         }
+
+        
+        // rimozione dallo spazio comportamentale degli stati potati
+        for (int i = 0; i < notTraiettorie.size(); i++) {
+            boolean appartieneATraiettoria = false;
+            do {
+                StatoRete ultimoStato = notTraiettorie.get(i).getUltimoStato();
+                notTraiettorie.get(i).rimuoviUltimoStato();
+                StatoRete penultimoStato = notTraiettorie.get(i).getUltimoStato();
+
+                spazioC.rimuoviLato(penultimoStato, ultimoStato);
+
+                for (int j = 0; j < traiettorie.size() && !appartieneATraiettoria; j++) {
+                    if (traiettorie.get(j).contains(penultimoStato)) {
+                        appartieneATraiettoria = true;
+                    }
+                }
+            } while (!appartieneATraiettoria);
+        }
+
         System.out.println("****************************************");
         System.out.println();
         System.out.println();
