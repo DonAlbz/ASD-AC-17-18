@@ -260,6 +260,9 @@ public class Rete {
     }
 
     private static void stampaCammini() {
+        
+        System.out.println(Parametri.CAMMINI_ETICHETTA);
+        System.out.println();
         for (int i = 0; i < cammini.size(); i++) {
             int numeroCammino = i + 1;
             System.out.println("numero cammino: " + numeroCammino);
@@ -451,8 +454,7 @@ public class Rete {
 
     private static void stampaTraiettorie(ArrayList<Cammino> traiettorie) {
 
-        System.out.println("****************************************");
-        System.out.println();
+        System.out.println(Parametri.TRAIETTORIE_ETICHETTA);
         System.out.println();
         for (int i = 0; i < traiettorie.size(); i++) {
             int numeroCammino = i + 1;
