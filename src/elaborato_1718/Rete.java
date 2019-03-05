@@ -155,6 +155,7 @@ public class Rete {
         scatta2();
         stampaCammini();
         ArrayList<Cammino> traiettorie = potatura();
+        stampaTraiettorie(traiettorie);
         inserisciLatiSpazioComportamentale(traiettorie);
         System.out.println(spazioC.toString());
     }
@@ -367,7 +368,7 @@ public class Rete {
             ArrayList<StatoRete> statiTraiettoria = traiettoria.getCammino();
             if (statiTraiettoria.size() > 1) {
                 for (int i = 1; i < statiTraiettoria.size(); i++) {
-                    StatoReteRidenominato statoPrecedente = new StatoReteRidenominato(statiTraiettoria.get(i-1));
+                    StatoReteRidenominato statoPrecedente = new StatoReteRidenominato(statiTraiettoria.get(i - 1));
                     StatoReteRidenominato statoCorrente = new StatoReteRidenominato(statiTraiettoria.get(i));
                     spazioC.aggiungiLato(statoPrecedente, statoCorrente);
                 }
@@ -428,7 +429,6 @@ public class Rete {
             }
         }
 
-        
         // rimozione dallo spazio comportamentale degli stati potati
         for (int i = 0; i < notTraiettorie.size(); i++) {
             boolean appartieneATraiettoria = false;
@@ -446,6 +446,11 @@ public class Rete {
                 }
             } while (!appartieneATraiettoria);
         }
+        return traiettorie;
+    }
+
+    private static void stampaTraiettorie(ArrayList<Cammino> traiettorie) {
+
         System.out.println("****************************************");
         System.out.println();
         System.out.println();
@@ -457,7 +462,6 @@ public class Rete {
             System.out.println();
             System.out.println();
         }
-        return traiettorie;
     }
 
 }
