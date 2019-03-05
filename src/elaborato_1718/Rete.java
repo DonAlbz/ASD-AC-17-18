@@ -154,7 +154,8 @@ public class Rete {
     public static void start2() {
         scatta2();
         stampaCammini();
-        potatura();
+        ArrayList<Cammino> traiettorie = potatura();
+        inserisciLatiSpazioComportamentale(traiettorie);
         System.out.println(spazioC.toString());
     }
 
@@ -182,7 +183,7 @@ public class Rete {
                 statoAttuale.setNumero(stati.size());
                 stati.add(statoAttuale);
                 camminoAttuale.add(statoAttuale);
-                spazioC.aggiungiVertice(statoAttuale);
+                spazioC.aggiungiVertice(new StatoReteRidenominato(statoAttuale));
 //                System.out.println(statoAttuale.toString());
                 setRete(statoAttuale);
                 if (statoAttuale.isAbilitato(automi)) {
@@ -227,7 +228,7 @@ public class Rete {
 
                     for (StatoRete s : statiDopoLoScatto) {
                         pilaStato.push(s);
-                        spazioC.aggiungiLato(statoAttuale, s);
+//                        spazioC.aggiungiLato(statoAttuale, s);
                     }
                 } else {
                     //stato senza transizioni abilitate
@@ -245,7 +246,7 @@ public class Rete {
                 statoAttuale.setNumero(stati.indexOf(statoAttuale));
                 StatoRete statoPrecedente = camminoAttuale.getUltimoStato();
                 camminoAttuale.add(statoAttuale);
-                spazioC.aggiungiLato(statoPrecedente, statoAttuale);
+//                spazioC.aggiungiLato(statoPrecedente, statoAttuale);
                 nuovoCammino.copiaCammino(camminoAttuale);
                 cammini.add(nuovoCammino);
                 if (!pilaDiramazioni.isEmpty()) {
@@ -361,6 +362,19 @@ public class Rete {
         return daRitornare;
     }
 
+    private static void inserisciLatiSpazioComportamentale(ArrayList<Cammino> traiettorie) {
+        for (Cammino traiettoria : traiettorie) {
+            ArrayList<StatoRete> statiTraiettoria = traiettoria.getCammino();
+            if (statiTraiettoria.size() > 1) {
+                for (int i = 1; i < statiTraiettoria.size(); i++) {
+                    StatoReteRidenominato statoPrecedente = new StatoReteRidenominato(statiTraiettoria.get(i-1));
+                    StatoReteRidenominato statoCorrente = new StatoReteRidenominato(statiTraiettoria.get(i));
+                    spazioC.aggiungiLato(statoPrecedente, statoCorrente);
+                }
+            }
+        }
+    }
+
     public void setEventi(Evento[] eventi) {
         this.eventi = eventi;
     }
@@ -393,7 +407,7 @@ public class Rete {
 
     }
 
-    private static void potatura() {
+    private static ArrayList<Cammino> potatura() {
         ArrayList<Cammino> traiettorie = new ArrayList<>();
         ArrayList<Cammino> notTraiettorie = new ArrayList<>();
         for (Cammino c : cammini) {
@@ -423,7 +437,7 @@ public class Rete {
                 notTraiettorie.get(i).rimuoviUltimoStato();
                 StatoRete penultimoStato = notTraiettorie.get(i).getUltimoStato();
 
-                spazioC.rimuoviLato(penultimoStato, ultimoStato);
+                spazioC.provaARimuovereVertice(new StatoReteRidenominato(ultimoStato));
 
                 for (int j = 0; j < traiettorie.size() && !appartieneATraiettoria; j++) {
                     if (traiettorie.get(j).contains(penultimoStato)) {
@@ -432,7 +446,6 @@ public class Rete {
                 }
             } while (!appartieneATraiettoria);
         }
-
         System.out.println("****************************************");
         System.out.println();
         System.out.println();
@@ -444,6 +457,7 @@ public class Rete {
             System.out.println();
             System.out.println();
         }
+        return traiettorie;
     }
 
 }

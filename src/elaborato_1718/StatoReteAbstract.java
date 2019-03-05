@@ -17,6 +17,7 @@ public abstract class StatoReteAbstract {
     private Stato[] stati;
     private int numero;
     private String descrizione;
+    private Transizione transizionePrecedente;
 
     public StatoReteAbstract (Evento[] link, Stato[] stati, int _numero) {
         this.link = link;
@@ -58,48 +59,7 @@ public abstract class StatoReteAbstract {
         
     }
     
-    /**
-     * Override del metodo per poter implementare il metodo contains() in un
-     * arrayList di cammini
-     *
-     * @param o
-     * @return
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof StatoRete)) {
-            return false;
-        }
-        StatoRete stato2 = (StatoRete) o;
-        /*
-        for (int i = 0; i < link.length; i++) {
-            if (!this.link[i].equals(stato2.getLink()[i])) {
-                return false;
-            }
-        }
-        for (int i = 0; i < stati.length; i++) {
-            if (!this.stati[i].equals(stato2.getStati()[i])) {
-                return false;
-            }
-        }*/
-        if (descrizione.equals(stato2.getDescrizione())) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = Objects.hash(descrizione);
-        /*
-        int hash = 7;        
-        hash = 97 * hash + Arrays.deepHashCode(this.link);
-        hash = 97 * hash + Arrays.deepHashCode(this.stati);*/
-        return hash;
-    }
+    
 
     public Evento[] getLink() {
         return link;
@@ -133,4 +93,12 @@ public abstract class StatoReteAbstract {
     public void setNumero(int numero) {
         this.numero = numero;
     }
+    
+    public Transizione getTransizionePrecedente() {
+        return transizionePrecedente;
+    }
+
+    public void setTransizionePrecedente(Transizione transizionePrecedente) {
+        this.transizionePrecedente = transizionePrecedente;
+    }    
 }
