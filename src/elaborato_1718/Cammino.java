@@ -75,6 +75,10 @@ public class Cammino {
     public StatoRete getUltimoStato() {
         return this.cammino.get(this.cammino.size() - 1);
     }
+    
+    public void rimuoviUltimoStato(){
+        this.cammino.remove(cammino.size()-1);
+    }
 
     public ArrayList<StatoRete> getCammino() {
         return cammino;
