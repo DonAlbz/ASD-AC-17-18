@@ -38,8 +38,8 @@ public class Rete {
         boolean almenoUnAutomaAbilitato = false;
         boolean automaAttualeAbilitato = false;
        
-
-        while (true) { //TODO: sostituire il true con una verifica che restituisce true se la rete può scattare
+        int f = 1;
+        while (f<15) { //TODO: sostituire il true con una verifica che restituisce true se la rete può scattare
             nuovoCammino = false;
             almenoUnAutomaAbilitato = false;
             for (int i = 0; i < automi.size() && !nuovoCammino; i++) {
@@ -78,6 +78,7 @@ public class Rete {
                 System.out.println();
                 aggiungiCammino(numeroCammino);
             }
+            f++;
         }
     }
 
@@ -143,6 +144,20 @@ public class Rete {
     
     public static Vector<Automa> getAutomi(){
         return automi;
+    }
+    
+    public static Evento[] getEventi(){
+        return eventi;
+    }
+    
+    public static Evento getEvento(String nomeEvento){
+        Evento evento = null;
+        for(int i = 0; i<eventi.length; i++){
+            if(eventi[i].getDescrizione().equalsIgnoreCase(nomeEvento)){
+                evento = eventi[i];
+            }
+        }
+        return evento;
     }
 
 }

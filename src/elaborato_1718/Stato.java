@@ -12,7 +12,7 @@ import java.util.Vector;
  * @author Alb
  */
 public class Stato {
-
+    
     private Vector<Transizione> transizioni;
     private Transizione transizioneAbilitata;
     private String descrizione;
@@ -31,6 +31,11 @@ public class Stato {
         }
         return false;
     }
+    
+    Vector <Transizione> getTransizioni()
+    {
+        return transizioni;
+    }
 
     Transizione getTransizioneAbilitata() {
         return transizioneAbilitata;
@@ -46,6 +51,11 @@ public class Stato {
 
     public void addTransazione(Transizione t) {
         transizioni.add(t);
+    }
+    
+    public int getTransizioniSize()
+    {
+        return transizioni.size();
     }
 
     public boolean equals(Stato s2) {
