@@ -10,10 +10,18 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
+
         
         Import.apriFileTxt();
         Import.inizializzazioneRete();
-        Rete.start();
+       // Rete.start();
+
+   
+        //Import.primoScenario();
+        Rete.start2();
+       // Rete.test();
 
     }
+    
+    //prova release
 }
