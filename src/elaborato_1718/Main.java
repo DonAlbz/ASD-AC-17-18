@@ -11,11 +11,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         
-        //Import inizio = new Import();
-        //inizio.primoScenario_nuovo();
         Import.apriFileTxt();
         Import.inizializzazioneRete();
-        //Import.primoScenario();
         Rete.start();
 
     }

@@ -64,112 +64,43 @@ public class Import {
             System.out.println("");
         }
 
-        // Inizializzazione delle transizioni per ogni stato
-        Evento[] eventoOut = {null, eventi[1]};
-        Evento[] eventot2b = {null, eventi[1]};
-        Evento[] eventit3a = {eventi[0], null};
-        
-        Stato s20 = Rete.getAutomi().get(0).getStato("20");
-        Stato s21 = Rete.getAutomi().get(0).getStato("21");
-        Stato s30 = Rete.getAutomi().get(1).getStato("30");
-        Stato s31 = Rete.getAutomi().get(1).getStato("31");
-        Evento e2 = eventi[0];
-        Evento e3 = eventi[1];
-        
-        // CICLO INIZIALIZZAZIONE TRANSIZIONI
-        for (Automa automa : Rete.getAutomi()) {
+        // Ciclo inizializzazione delle transizioni
+        for(Automa automa : Rete.getAutomi()) {
             for (Stato stato : automa.getStati()) {
-                System.out.println("le transizioni uscenti dallo stato: "+stato.getDescrizione()+" sono: ");
                 ArrayList<String> transizioniUscenti = getStatiDiPartenza(stato, automa, file);
                 for(String transizione : transizioniUscenti){
-                    System.out.println(transizione);
-                    if (stato.getDescrizione().equalsIgnoreCase("20")) {
-                        Transizione t2a = new Transizione(transizione, s21, 0, e2, eventoOut);
-                        stato.addTransazione(t2a);
+                    System.out.println("Automa " + automa.getDescrizione() + " - dallo stato " + stato.getDescrizione() + " la transazione uscente è: " + transizioniUscenti.get(0));
+                    String nomeTransizione = transizione;
+                    String nomeStatoDestinazione = getStatoDestinazioneDiTransizione(automa, transizione, file);
+                    System.out.println("Lo stato di destinazione è: " + nomeStatoDestinazione);
+                    Stato statoDestinazione = automa.getStato(nomeStatoDestinazione);
+                    int posizioneLinkIn = getLinkInDiTransizione(automa, transizione, linkString, file);
+                    System.out.println("Posizione link in: " + posizioneLinkIn);
+                    int indiceEventoRichiesto = getIndiceEventoRichiesto(automa, nomeTransizione, eventi, file);
+                    if (indiceEventoRichiesto == -1) {
+                        System.out.println("Nessun evento richiesto");
+                        String[] eventiInUscitaString = getEventiInUscita(automa, transizione, file);
+                        Evento[] eventiInUscita = getEventiInUscita(eventiString, eventiInUscitaString);
+                        Transizione transizioneDaInserire = new Transizione(nomeTransizione, statoDestinazione, posizioneLinkIn, null, eventiInUscita);
+                        stato.addTransazione(transizioneDaInserire);
+                    } else {
+                        Evento eventoRichiesto = eventi[getIndiceEventoRichiesto(automa, nomeTransizione, eventi, file)];
+                        System.out.println("Evento richiesto: " + eventoRichiesto.getDescrizione());
+                        String[] eventiInUscitaString = getEventiInUscita(automa, transizione, file);
+                        Evento[] eventiInUscita = getEventiInUscita(eventiString, eventiInUscitaString);
+                        Transizione transizioneDaInserire = new Transizione(nomeTransizione, statoDestinazione, posizioneLinkIn, eventoRichiesto, eventiInUscita);
+                        stato.addTransazione(transizioneDaInserire);
                     }
-                    if (stato.getDescrizione().equalsIgnoreCase("21")) {
-                        Transizione t2b = new Transizione(transizione, s20, -1, null, eventot2b);
-                        stato.addTransazione(t2b);
-                    }
-                    if (stato.getDescrizione().equalsIgnoreCase("30")) {
-                        Transizione t3a = new Transizione(transizione, s31, -1, null, eventit3a);
-                        stato.addTransazione(t3a);
-                    }
-                    if (stato.getDescrizione().equalsIgnoreCase("31")) {
-//                        if(transizione.equalsIgnoreCase("t3c")){
-//                            
-//                        }
-//                        if(transizione.equalsIgnoreCase("t3b")){
-//                            
-//                        }
-                        Transizione t3c = new Transizione("t3c", s31, 1, e3, null);
-                        Transizione t3b = new Transizione("t3b", s30, 1, e3, null);
-                        stato.addTransazione(t3b);
-                        stato.addTransazione(t3c);
-                    }
+                    System.out.println("");
                 }
-
             }
-
         }
-
-        
-
-        
-        
-        //METODO VECCHIO   
-        
-//        for(Automa automa : Rete.getAutomi()) {
-//            for (Stato stato : automa.getStati()) {
-//                ArrayList<String> transizioniUscenti = getStatiDiPartenza(stato, automa, file);
-//                if (transizioniUscenti.size() == 1) {
-//                    System.out.println("Automa " + automa.getDescrizione() + " - dallo stato " + stato.getDescrizione() + " la transazione uscente è: " + transizioniUscenti.get(0));
-//                    String nomeTransizione = transizioniUscenti.get(0);
-//                    String nomeStatoDestinazione = getStatoDestinazioneDiTransizione(automa, transizioniUscenti.get(0), file);
-//                    System.out.println("Lo stato di destinazione è: " + nomeStatoDestinazione);
-//                    Stato statoDestinazione = automa.getStato(nomeStatoDestinazione);
-//                    int posizioneLinkIn = getLinkInDiTransizione(automa, transizioniUscenti.get(0), linkString, file);
-//                    System.out.println("Posizione link in: " + posizioneLinkIn);
-//                    int indiceEventoRichiesto = getIndiceEventoRichiesto(automa, nomeTransizione, eventi, file);
-//                    if (indiceEventoRichiesto == -1) {
-//                        System.out.println("Nessun evento richiesto");
-//                        String[] eventiInUscitaString = getEventiInUscita(automa, transizioniUscenti.get(0), file);
-//                        Evento[] eventiInUscita = getEventiInUscita(eventiString, eventiInUscitaString);
-//                        Transizione transizioneDaInserire = new Transizione(nomeTransizione, statoDestinazione, posizioneLinkIn, null, eventiInUscita);
-//                        stato.addTransazione(transizioneDaInserire);
-//                    } else {
-//                        Evento eventoRichiesto = eventi[getIndiceEventoRichiesto(automa, nomeTransizione, eventi, file)];
-//                        System.out.println("Evento richiesto: " + eventoRichiesto.getDescrizione());
-//                        String[] eventiInUscitaString = getEventiInUscita(automa, transizioniUscenti.get(0), file);
-//                        Evento[] eventiInUscita = getEventiInUscita(eventiString, eventiInUscitaString);
-//                        Transizione transizioneDaInserire = new Transizione(nomeTransizione, statoDestinazione, posizioneLinkIn, eventoRichiesto, eventiInUscita);
-//                        stato.addTransazione(transizioneDaInserire);
-//                    }
-//                    System.out.println("singolo");
-//                } else {
-//                    Transizione t3c = new Transizione("t3c", Rete.getAutomi().get(1).getStato("31"), 1, eventi[1], null);
-//                    stato.addTransazione(t3c);
-//                    Transizione t3b = new Transizione("t3b", Rete.getAutomi().get(1).getStato("30"), 1, eventi[1], null);
-//                    stato.addTransazione(t3b);
-//                    System.out.println("multiplo");
-                    
-//                    for(String transizione : transizioniUscenti){
-//                        if (stato.getDescrizione().equalsIgnoreCase("31") && transizione.equalsIgnoreCase("t3c")){
-//                            Transizione t3c = new Transizione("t3c", Rete.getAutomi().get(1).getStato("31"), 1, eventi[1], null);
-//                            stato.addTransazione(t3c);
-//                            System.out.println("inserito t3c");
-//                        }
-//                        if (stato.getDescrizione().equalsIgnoreCase("31") && transizione.equalsIgnoreCase("t3b")){
-//                            Transizione t3b = new Transizione("t3b", Rete.getAutomi().get(1).getStato("30"), 1, eventi[1], null);
-//                            stato.addTransazione(t3b);
-//                            System.out.println("inserito t3b");
-//                        }
-//                        
-//                    }
-                    
-       
+                
     }
     
+    /**
+     * Metodo di test utilizzato per testare il metodo principale Rete.start()
+     */
     public static void primoScenario() {
 
         Automa c2 = new Automa("c2");
