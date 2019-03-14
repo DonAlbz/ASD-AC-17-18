@@ -14,8 +14,8 @@ public class Main {
         //Import inizio = new Import();
         //inizio.primoScenario_nuovo();
         Import.apriFileTxt();
-        //Import.inizializzazioneRete();
-        Import.primoScenario();
+        Import.inizializzazioneRete();
+        //Import.primoScenario();
         Rete.start();
 
     }
