@@ -58,6 +58,7 @@ public class Rete {
         potatura();
 
     }
+    }
 
     private static void scatta(Cammino camminoAttuale, StatoRete statoAttuale, Vector<Automa> _automi, Evento[] _link) {
         boolean almenoUnAutomaAbilitato;
@@ -264,8 +265,7 @@ public class Rete {
                     camminoAttuale.togliFinoAPrimaDelloStato(pilaDiramazioni.pop());//gli ultimi elementi del cammini vengono rimossi finchè non si incontra il primo elemento della coda
                 }
 
-            }
-            f++;
+            }            
         }
 
     }

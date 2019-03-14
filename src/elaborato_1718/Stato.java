@@ -43,11 +43,6 @@ public class Stato {
         return resp;
     }
     
-    Vector <Transizione> getTransizioni()
-    {
-        return transizioni;
-    }
-
     ArrayList<Transizione> getTransizioniAbilitate() {
         return transizioniAbilitate;
     }
@@ -66,11 +61,6 @@ public class Stato {
         transizioni.add(t);
     }
     
-    public int getTransizioniSize()
-    {
-        return transizioni.size();
-    }
-
     public boolean equals(Stato s2) {
         return descrizione.equals(s2.getDescrizione());
     }

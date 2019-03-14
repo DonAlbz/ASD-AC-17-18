@@ -103,9 +103,6 @@ public class Transizione {
         return statoDestinazione;
     }
 
-    public String getDescrizione() {
-        return descrizione;
-    }
     
     
 }
