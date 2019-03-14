@@ -13,7 +13,7 @@ import java.util.Vector;
  * @author Alb
  */
 public class Stato {
-
+    
     private Vector<Transizione> transizioni;
     private ArrayList<Transizione> transizioniAbilitate;
     private Transizione transizioneEseguita;
@@ -42,6 +42,11 @@ public class Stato {
         }
         return resp;
     }
+    
+    Vector <Transizione> getTransizioni()
+    {
+        return transizioni;
+    }
 
     ArrayList<Transizione> getTransizioniAbilitate() {
         return transizioniAbilitate;
@@ -60,11 +65,17 @@ public class Stato {
     public void addTransazione(Transizione t) {
         transizioni.add(t);
     }
+    
+    public int getTransizioniSize()
+    {
+        return transizioni.size();
+    }
 
     public boolean equals(Stato s2) {
         return descrizione.equals(s2.getDescrizione());
     }
 
+    @Override
     public String toString() {
         return descrizione;
     }

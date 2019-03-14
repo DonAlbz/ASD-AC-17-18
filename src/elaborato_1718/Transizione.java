@@ -21,8 +21,8 @@ public class Transizione {
 
     /**
      *
-     * @param s
-     * @param destinazione
+     * @param descrizione nome della transizione
+     * @param destinazione stato di destinazione della transizione
      * @param linkIn quale link viene "ascoltato", se non viene ascoltato alcun
      * link, linkIn=-1
      * @param eventoRichiesto evento richiesto sul link numero linkIn
@@ -34,9 +34,8 @@ public class Transizione {
      *
      *
      */
-    public Transizione(String s, Stato destinazione, int linkIn,
-            Evento eventoRichiesto, Evento[] linkOut) {
-        this.descrizione = s;
+    public Transizione(String descrizione, Stato destinazione, int linkIn, Evento eventoRichiesto, Evento[] linkOut) {
+        this.descrizione = descrizione;
         this.statoDestinazione = destinazione;
         this.linkIn = linkIn;
         this.eventoRichiesto = eventoRichiesto;
@@ -79,8 +78,12 @@ public class Transizione {
         }
         return statoDestinazione;
     }
-
-    public String toString() {
+    
+    public String getDescrizione() {
+        return descrizione;
+    }
+    
+    public String toString(){
         return descrizione;
     }
 

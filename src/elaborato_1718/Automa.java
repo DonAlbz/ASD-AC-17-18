@@ -17,17 +17,21 @@ public class Automa {
     private Vector<Stato> stati;
     private Stato statoCorrente;
     private String descrizione;
+
     private ArrayList<Transizione> transizioniAbilitate;
     private Transizione transizioneEseguita;
+
     
     public String getDescrizione() {
         return descrizione;
     }
+
     
     public Automa(String s) {
         this.descrizione = s;
         stati = new Vector<>();
         transizioniAbilitate = new ArrayList<>();
+
     }
     
     boolean isAbilitato(Evento[] _link) {
@@ -125,4 +129,26 @@ public class Automa {
         stringa.append("s.corrente: " + statoCorrente.getDescrizione());
         return stringa.toString();
     }
+
+    
+    /**
+     *
+     * @param statoDaCercare e' la stringa che identifica lo stato da cercare nell'array 
+     * @return ritorna lo stato che si stava cercando, null se lo stato non esiste
+     */
+    public Stato getStato(String statoDaCercare){
+        Stato cercato = null;
+        for(int i = 0; i<stati.size(); i++){
+            if(statoDaCercare.equalsIgnoreCase(stati.get(i).getDescrizione())){
+                cercato = stati.get(i);
+            }
+        }
+        return cercato;
+    }
+    
+    public Vector<Stato> getStati(){
+        return stati;
+    }
+
+
 }

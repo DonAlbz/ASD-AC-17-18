@@ -42,6 +42,15 @@ public class Rete {
 
         Cammino camminoAttuale = creaNuovoCammino();//il cammino attuale diventa un nuovo cammino con gli stati degli automi e i link azzerati
         int numeroCammino = 0;
+
+        boolean nuovoCammino;
+        boolean almenoUnAutomaAbilitato = false;
+        boolean automaAttualeAbilitato = false;
+       
+        int f = 1;
+        while (true) { //TODO: sostituire il true con una verifica che restituisce true se la rete può scattare
+            nuovoCammino = false;
+
         numeroStati = 0;
         StatoRete statoRadice = creaStatoCorrente();
         scatta(camminoAttuale, statoRadice, (Vector<Automa>) automi.clone(), link.clone());
@@ -58,6 +67,7 @@ public class Rete {
             numeroStati++;
             ArrayList<Transizione>[] transizioneAbilitata = new ArrayList[_automi.size()];//Array di ArrayList, nella posizione i dell'array sono contenute le transizioni abilitate per l'automa i
             Transizione transizioneEseguita;
+
             almenoUnAutomaAbilitato = false;
             automaAttualeAbilitato = false;
             for (int i = 0; i < _automi.size() /*&& !scattato*/; i++) {//se nessun automa è già scattato, si itera su tutti gli automi
@@ -255,6 +265,7 @@ public class Rete {
                 }
 
             }
+            f++;
         }
 
     }
@@ -389,6 +400,24 @@ public class Rete {
 
     public static void setLink(int i, Evento evento) {
         link[i] = evento;
+    }
+    
+    public static Vector<Automa> getAutomi(){
+        return automi;
+    }
+    
+    public static Evento[] getEventi(){
+        return eventi;
+    }
+    
+    public static Evento getEvento(String nomeEvento){
+        Evento evento = null;
+        for(int i = 0; i<eventi.length; i++){
+            if(eventi[i].getDescrizione().equalsIgnoreCase(nomeEvento)){
+                evento = eventi[i];
+            }
+        }
+        return evento;
     }
 
     /**
