@@ -23,6 +23,10 @@ public class StatoReteRidenominato extends StatoReteAbstract {
         setTransizionePrecedente(s.getTransizionePrecedente());        
     }
     
+    public StatoReteRidenominato(StatoReteAbstract s, Transizione t){
+        super (s.getLink(), s.getStati(), s.getNumero());       
+        setTransizionePrecedente(t);        
+    }
     
     /**
      * Override del metodo per poter implementare il metodo contains() in un

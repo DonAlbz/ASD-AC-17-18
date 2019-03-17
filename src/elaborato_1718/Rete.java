@@ -195,7 +195,7 @@ public class Rete {
                 statoAttuale.setNumero(stati.size());
                 stati.add(statoAttuale);
                 camminoAttuale.add(statoAttuale);
-                spazioC.aggiungiVertice(new StatoReteRidenominato(statoAttuale));
+                spazioC.aggiungiVertice(new StatoReteRidenominato(statoAttuale, null));
 //                System.out.println(statoAttuale.toString());
                 setRete(statoAttuale);
                 if (statoAttuale.isAbilitato(automi)) {

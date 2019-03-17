@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Import {
     
@@ -20,7 +22,18 @@ public class Import {
     private static Vector<String> file;
     
     
-    public static void inizializzazioneRete(){
+    public static void caricaReteDaFile(){
+        try {
+            apriFileTxt();
+        } catch (IOException ex) {
+            Logger.getLogger(Import.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        inizializzazioneRete();
+        
+    }
+    
+    private static void inizializzazioneRete(){
         // Inizializzazione della rete
         System.out.println(Parametri.INIZIALIZZAZIONE_RETE_1);
         System.out.println(Parametri.INIZIALIZZAZIONE_RETE_2);
@@ -148,7 +161,7 @@ public class Import {
         Rete.addAutoma(c3);
     }
     
-    public static void apriFileTxt() throws FileNotFoundException, IOException {
+    private static void apriFileTxt() throws FileNotFoundException, IOException {
         File filetxt = new File(path);
         BufferedReader textReader = new BufferedReader(new FileReader(filetxt));
 
@@ -168,28 +181,28 @@ public class Import {
         textReader.close();
     }
     
-    public static String[] getAutomi(Vector<String> fileInput){
+    private static String[] getAutomi(Vector<String> fileInput){
         // sappiamo che gli automi sono posizionati in riga 0 del file
         String daSplittare = fileInput.get(0);
         String[] automi = daSplittare.split("\t");
         return automi;
     }
     
-    public static String[] getLink(Vector<String> fileInput){
+    private static String[] getLink(Vector<String> fileInput){
         // sappiamo che i link sono posizionati in riga 2 del file
         String daSplittare = fileInput.get(2);
         String[] link = daSplittare.split("\t");
         return link;
     }
     
-    public static String[] getEventi(Vector<String> fileInput){
+    private static String[] getEventi(Vector<String> fileInput){
         // sappiamo che gli eventi sono posizionati in riga 4 del file
         String daSplittare = fileInput.get(4);
         String[] eventi = daSplittare.split("\t");
         return eventi;
     }
     
-    public static ArrayList<String> getStatiDaAutoma(Automa automa, Vector<String> fileInput){
+    private static ArrayList<String> getStatiDaAutoma(Automa automa, Vector<String> fileInput){
         ArrayList<String> statiDiAutoma = new ArrayList<>();
         for(int i=0; i<fileInput.size(); i++){
             // non devo accettare la riga 2 perché nel file input è l'elenco degli automi
@@ -205,7 +218,7 @@ public class Import {
         return statiDiAutoma;
     }
     
-    public static ArrayList<String> getNomiTransizioni(Automa automa, Vector<String> fileInput){
+    private static ArrayList<String> getNomiTransizioni(Automa automa, Vector<String> fileInput){
         ArrayList<String> nomiTransizioni = new ArrayList<>();
         for(int i=0; i<fileInput.size(); i++){
             // la posizione delle transazioni è sempre sotto di 3 righe
@@ -224,7 +237,7 @@ public class Import {
     }
     
     // METODO AL MOMENTO NON UTILIZZATO
-    public static ArrayList<String> getStatiDestinazioneDiTransizione(Automa automa, Vector<String> fileInput){
+    private static ArrayList<String> getStatiDestinazioneDiTransizione(Automa automa, Vector<String> fileInput){
         ArrayList<String> statiDestinazione = new ArrayList<>();
         for(int i=0; i<fileInput.size(); i++){
             // la posizione delle transazioni è sempre a partire dalla riga 3 del blocco di riferimento dell'automa
@@ -249,7 +262,7 @@ public class Import {
      * @param fileInput vector contenente le stringhe del file input.txt
      * @return viene ritornato il nome dello stato destinazione della transizione
      */
-    public static String getStatoDestinazioneDiTransizione(Automa automa, String nomeTransizione, Vector<String> fileInput){
+    private static String getStatoDestinazioneDiTransizione(Automa automa, String nomeTransizione, Vector<String> fileInput){
         String statoDestinazione = null;
         for(int i = 0; i<fileInput.size(); i++){
             // la posizione delle transazioni è sempre a partire dalla riga 3 del blocco di riferimento dell'automa
@@ -269,7 +282,7 @@ public class Import {
         return statoDestinazione;
     }
     
-    public static int getIndiceEventoRichiesto(Automa automa, String nomeTransizione, Evento[] elencoEventi, Vector<String> fileInput) {
+    private static int getIndiceEventoRichiesto(Automa automa, String nomeTransizione, Evento[] elencoEventi, Vector<String> fileInput) {
         int indiceEventoRichiesto = -1;
         for (int i = 0; i < fileInput.size(); i++) {
             if (fileInput.get(i).equals(automa.getDescrizione()) && i != 2) {
@@ -300,7 +313,7 @@ public class Import {
         return indiceEventoRichiesto;
     }
     
-    public static String[] getEventiInUscita(Automa automa, String nomeTransizione, Vector<String> fileInput){
+    private static String[] getEventiInUscita(Automa automa, String nomeTransizione, Vector<String> fileInput){
         String[] eventiInUscita = null;
         for(int i=0; i<fileInput.size(); i++){
             if(fileInput.get(i).equals(automa.getDescrizione()) && i!=2){
@@ -341,7 +354,7 @@ public class Import {
      * @param eventiInUscita eventi in uscita dalla transizione considerata
      * @return ritorna l'array di Evento nel caso ci sono eventiInUscita dalla transizione, altrimenti ritorna null
      */
-    public static Evento[] getEventiInUscita(String[] eventi, String[] eventiInUscita) {
+    private static Evento[] getEventiInUscita(String[] eventi, String[] eventiInUscita) {
         Evento[] eventiFinale = new Evento[eventi.length];
         for (int x = 0; x < eventi.length; x++) {
             //eventiFinale[x] = new Evento(null);
@@ -368,7 +381,7 @@ public class Import {
         return eventiFinale;
     }
     
-    public static ArrayList<Evento> getEventiInUscitaList(String[] eventi, String[] eventiInUscita){
+    private static ArrayList<Evento> getEventiInUscitaList(String[] eventi, String[] eventiInUscita){
         ArrayList<Evento> eventiFinale = new ArrayList<>();
         int i = 0;
         if (eventiInUscita.length != 0) {
@@ -385,7 +398,7 @@ public class Import {
         return eventiFinale;
     }
     
-    public static Evento[] convertiListInArray(ArrayList<Evento> eventi){
+    private static Evento[] convertiListInArray(ArrayList<Evento> eventi){
         Evento[] eventiArray = new Evento[eventi.size()];
         for(int i = 0; i<eventi.size(); i++){
             eventiArray[i] = eventi.get(i);
@@ -393,7 +406,7 @@ public class Import {
         return eventiArray;
     }
     
-    public static String rimuoviParentesi(String stringa){
+    private static String rimuoviParentesi(String stringa){
         String valida = stringa.substring(0, 2);
         return valida;
     }
@@ -407,7 +420,7 @@ public class Import {
      * @return la funzione ritorna un int in cui, se esiste, ritorna la posizione del link "attivatore" della transizione
      * altrimenti ritorna -1. Di riferimento si veda il metodo getLink in cui si calcolano quanti link ci sono nella rete
      */
-    public static int getLinkInDiTransizione(Automa automa, String nomeTransizione, String[] elencoLink, Vector<String> fileInput){
+    private static int getLinkInDiTransizione(Automa automa, String nomeTransizione, String[] elencoLink, Vector<String> fileInput){
         int posizioneLink = -1;
         for(int i=0; i<fileInput.size(); i++){
             if(fileInput.get(i).equals(automa.getDescrizione()) && i!=2){
@@ -444,7 +457,7 @@ public class Import {
      * @param fileInput fine inpunt contenente il txt
      * @return vengono ritornate le strighe con i nomi delle transizioni che escono dallo stato, null se non esce alcuna transizione
      */
-    public static ArrayList<String> getStatiDiPartenza(Stato stato, Automa automa, Vector<String> fileInput){
+    private static ArrayList<String> getStatiDiPartenza(Stato stato, Automa automa, Vector<String> fileInput){
         ArrayList<String> transizioniUscenti = new ArrayList<>();
         for(int i = 0; i<fileInput.size(); i++){
             if(fileInput.get(i).equals(automa.getDescrizione()) && i!=2){
